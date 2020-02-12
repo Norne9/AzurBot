@@ -38,3 +38,7 @@ def tap(x: int, y: int):
 
 def swipe(x1: int, y1: int, x2: int, y2: int):
     shell(["input", "swipe", str(int(x1)), str(int(y1)), str(int(x2)), str(int(y2))])
+
+
+def back():
+    shell(["input", "keyevent", "4"])
