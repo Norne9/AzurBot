@@ -114,8 +114,11 @@ def begin_battle():
     #  Check mood
     screen = adb.screenshot()
     if BTN_MOOD.on_screen(screen):
-        log("Ships in bad mood. Wait 30min")
-        time.sleep(60 * 30)
+        log("Ships in bad mood. Wait 60min")
+        for _ in range(3):
+            adb.back()
+            time.sleep(2.0)
+        time.sleep(60 * 60)
         log("Continue")
 
     screen = adb.screenshot()
@@ -123,7 +126,7 @@ def begin_battle():
 
 
 def run():
-    boss_clicks, ship_clicks = 0, 0
+    boss_clicks, ship_clicks, clear_count = 0, 0, 0
     is_nothing = False
     while True:
         screen = adb.screenshot()
@@ -157,7 +160,9 @@ def run():
                 BTN_COMMISSION.click(screen)
                 screen = adb.screenshot()
                 if BTN_LEVEL_NAME.on_screen(screen):  # level finished
-                    after_level()
+                    clear_count += 1
+                    if clear_count % 3 == 0:
+                        after_level()
             else:  # nothing to do
                 if not is_nothing:
                     log("Nothing to do")
