@@ -8,7 +8,7 @@ import sys
 
 BTN_LV = Clickable("lv", offset_y=-14, delay=10.0)
 BTN_BOSS = Clickable("boss", delay=10.0)
-BTN_SWITCH = Clickable("switch", x=481, y=327)
+BTN_SWITCH = Clickable("switch", x=479, y=328)
 BTN_MOOD = Clickable("mood")
 
 BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
@@ -149,12 +149,17 @@ def run():
                 if boss_clicks < 2 and BTN_BOSS.click(screen):
                     ship_clicks = 0
                     boss_clicks += 1
-                elif ship_clicks < 4 and BTN_LV.click(screen):
+                elif ship_clicks < 2 and BTN_LV.click(screen):
                     ship_clicks += 1
                     boss_clicks = 0
                 else:
                     ship_clicks = 0
-                    do_nothing()
+                    adb.swipe(  # random swipe
+                        random.randint(200, 1720),
+                        random.randint(200, 880),
+                        random.randint(200, 1720),
+                        random.randint(200, 880),
+                    )
             elif BTN_CONFIRM.click(screen):  # after fight
                 screen = adb.screenshot()
                 BTN_COMMISSION.click(screen)
