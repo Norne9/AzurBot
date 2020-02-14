@@ -3,7 +3,6 @@ import random
 import adb
 from btn import Clickable
 from log import log
-import sys
 import argparse
 
 MODE_EVENT = False
@@ -126,10 +125,8 @@ def begin_battle():
     #  Check mood
     screen = adb.screenshot()
     if BTN_MOOD.on_screen(screen):
-        log("Ships in bad mood. Wait 60min")
-        for _ in range(3):
-            adb.back()
-            time.sleep(2.0)
+        log("Ships in bad mood. Wait 60 min")
+        click(608, 9, 13, 15, 6.0)  # go to main menu
         time.sleep(60 * 60)
         log("Continue")
 
