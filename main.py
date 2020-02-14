@@ -189,6 +189,7 @@ def run():
                 screen = adb.screenshot()
                 if BTN_LEVEL_NAME.on_screen(screen) or BTN_EVENT_NAME.on_screen(screen):  # level finished
                     clear_count += 1
+                    battle_count = 0
                     if clear_count % 3 == 0:
                         after_level()
                 elif BTN_SWITCH.on_screen(screen):  # fight finished
