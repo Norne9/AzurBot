@@ -4,15 +4,21 @@ import adb
 from btn import Clickable
 from log import log
 import sys
+import argparse
 
+MODE_EVENT = False
+MODE_SWAP = 5
 
 BTN_LV = Clickable("lv", offset_y=-14, delay=10.0)
 BTN_BOSS = Clickable("boss", delay=10.0)
-BTN_SWITCH = Clickable("switch", x=479, y=328)
+BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
 
-BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
 BTN_LEVEL_NAME = Clickable("level_name", delay=1.0)
+BTN_EVENT_NAME = Clickable("event_name", delay=1.0)
+
+BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
+BTN_CMODE = Clickable("cmode", x=518, y=294)
 BTN_GO1 = Clickable("go1", x=459, y=247, delay=1.0)
 BTN_GO2 = Clickable("go2", x=525, y=291)
 BTN_EVADE = Clickable("evade", x=505, y=224)
@@ -24,15 +30,16 @@ BTN_COMMISSION = Clickable("commission", x=284, y=252)
 
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
+BTN_ENHANCE = Clickable("enhance_button")
 
 
 useless_buttons = [
     BTN_MENU_BATTLE,
+    BTN_CMODE,
     BTN_GO1,
     BTN_GO2,
     BTN_EVADE,
     BTN_GOT_IT,
-    BTN_LEVEL_NAME,
 ]
 
 
@@ -45,11 +52,16 @@ def do_nothing():
     time.sleep(1.0)
 
 
+def click(x: int, y: int, w: int, h: int, delay: float):
+    x, y = random.randint(x * 3, x * 3 + w * 3), random.randint(y * 3, y * 3 + h * 3)
+    adb.tap(x, y)
+    time.sleep(delay)
+
+
 # TODO: Refactor 'tap(randint, randint); sleep()' to 'click(x, y, w, h, delay)'
 def after_level():
     log("Collecting oil")
-    adb.back()  # go to main menu
-    time.sleep(5.0)
+    click(608, 9, 13, 15, 3.0)  # go to main menu
 
     screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
@@ -76,32 +88,32 @@ def after_level():
     time.sleep(3.0)
     adb.tap(random.randint(189, 297), random.randint(195, 342))  # click first ship
     time.sleep(3.0)
-    adb.tap(random.randint(32, 114), random.randint(195, 243))  # open enhance screen
-    time.sleep(3.0)
+
+    # click enhance
+    screen = adb.screenshot()
+    if not BTN_ENHANCE.click(screen):
+        raise Exception("Error: No enhance button!")
+
     for _ in range(6):
         adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
-        time.sleep(2.0)
+        time.sleep(0.5)
         adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
-        time.sleep(2.0)
+        time.sleep(1.0)
 
         screen = adb.screenshot()
         if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
             screen = adb.screenshot()
             if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
                 adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
-                time.sleep(4.0)
+                time.sleep(2.0)
 
         adb.swipe(
             random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
         )
-        time.sleep(2.0)
+        time.sleep(1.0)
 
     log("Done!")
-    time.sleep(6.0)
-    adb.back()  # go back to menu
-    time.sleep(2.0)
-    adb.back()  # go back to menu
-    time.sleep(6.0)
+    click(608, 9, 13, 15, 6.0)  # go to main menu
 
 
 def begin_battle():
@@ -126,7 +138,7 @@ def begin_battle():
 
 
 def run():
-    boss_clicks, ship_clicks, clear_count = 0, 0, 0
+    boss_clicks, ship_clicks, clear_count, battle_count = 0, 0, 0, 0
     is_nothing = False
     while True:
         screen = adb.screenshot()
@@ -137,6 +149,16 @@ def run():
             begin_battle()
             continue
 
+        # level selection
+        if BTN_LEVEL_NAME.on_screen(screen):
+            if MODE_EVENT:
+                click(587, 80, 31, 29, 5.0)
+            else:
+                BTN_LEVEL_NAME.click(screen)
+        if MODE_EVENT:
+            BTN_EVENT_NAME.click(screen)
+
+        # go buttons & etc
         for btn in useless_buttons:
             if btn.click(screen):
                 boss_clicks, ship_clicks = 0, 0
@@ -164,10 +186,15 @@ def run():
                 screen = adb.screenshot()
                 BTN_COMMISSION.click(screen)
                 screen = adb.screenshot()
-                if BTN_LEVEL_NAME.on_screen(screen):  # level finished
+                if BTN_LEVEL_NAME.on_screen(screen) or BTN_EVENT_NAME.on_screen(screen):  # level finished
                     clear_count += 1
                     if clear_count % 3 == 0:
                         after_level()
+                elif BTN_SWITCH.on_screen(screen):  # fight finished
+                    battle_count += 1
+                    if battle_count >= MODE_SWAP:
+                        battle_count = 0
+                        BTN_SWITCH.click(screen)
             else:  # nothing to do
                 if not is_nothing:
                     log("Nothing to do")
@@ -187,8 +214,15 @@ def shot():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Bot for farming in Azur Lane")
+    parser.add_argument("--event", action="store_true", help="Farm event")
+    parser.add_argument("-s", action="store_true", help="Make screenshots")
+    parser.add_argument("--swap", action="store", type=int, default=5, help="Battle count before swap")
+    args = parser.parse_args()
+    MODE_EVENT, MODE_SWAP = args.event, args.swap
+
     log(adb.shell(["echo", '"Android connected!"']))
-    if len(sys.argv) > 1:
+    if args.s:
         shot()
     else:
         run()
