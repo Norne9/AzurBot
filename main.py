@@ -14,13 +14,13 @@ BTN_BOSS = Clickable("boss", delay=10.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
 
-BTN_LEVEL_NAME = Clickable("level_name", delay=1.0)
-BTN_EVENT_NAME = Clickable("event_name", delay=1.0)
+BTN_LEVEL_NAME = Clickable("level_name", delay=3.0)
+BTN_EVENT_NAME = Clickable("event_name", delay=3.0)
 
 BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
 BTN_CMODE = Clickable("cmode", x=518, y=294)
 BTN_GO1 = Clickable("go1", x=459, y=247, delay=1.0)
-BTN_GO2 = Clickable("go2", x=525, y=291)
+BTN_GO2 = Clickable("go2", x=525, y=291, delay=1.0)
 BTN_EVADE = Clickable("evade", x=505, y=224)
 BTN_GOT_IT = Clickable("got_it", delay=1.0)
 BTN_AUTO = Clickable("auto", x=376, y=56, delay=1.0)
@@ -155,8 +155,9 @@ def run():
                 click(587, 80, 31, 29, 5.0)
             else:
                 BTN_LEVEL_NAME.click(screen)
-        if MODE_EVENT:
-            BTN_EVENT_NAME.click(screen)
+            continue
+        if MODE_EVENT and BTN_EVENT_NAME.click(screen):
+            continue
 
         # go buttons & etc
         for btn in useless_buttons:
