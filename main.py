@@ -25,6 +25,7 @@ BTN_GOT_IT = Clickable("got_it", delay=1.0)
 BTN_AUTO = Clickable("auto", x=376, y=56, delay=1.0)
 BTN_BATTLE = Clickable("battle", x=529, y=306, delay=40.0)
 BTN_CONFIRM = Clickable("confirm", x=511, y=321, delay=15.0)
+BTN_LOCK_CONFIRM = Clickable("lock_confirm", x=360, y=252)
 BTN_COMMISSION = Clickable("commission", x=284, y=252)
 
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
@@ -37,6 +38,7 @@ useless_buttons = [
     BTN_CMODE,
     BTN_GO1,
     BTN_GO2,
+    BTN_LOCK_CONFIRM,
     BTN_EVADE,
     BTN_GOT_IT,
 ]
