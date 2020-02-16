@@ -1,5 +1,6 @@
 import subprocess
 import cv2
+import numpy as np
 from typing import List
 
 
@@ -14,17 +15,15 @@ def shell(cmd: List[str]) -> str:
 
 
 def screenshot():
-    # take screenshot
-    shell(["screencap", "/mnt/sdcard/test.png"])
-    # pull it to pc
     with subprocess.Popen(
-        ["adb", "pull", "/mnt/sdcard/test.png"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+        ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     ) as proc:
-        _, err = proc.communicate()
+        data, err = proc.communicate()
         if len(err) > 0:
             raise Exception(f"ADB {err.decode()}")
     # load
-    image = cv2.imread("test.png", cv2.IMREAD_GRAYSCALE)
+
+    image = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)
     # resize
     resized = cv2.resize(image, (image.shape[1] // 3, image.shape[0] // 3), interpolation=cv2.INTER_AREA)
     if image.shape[0] > image.shape[1]:
