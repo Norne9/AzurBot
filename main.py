@@ -4,6 +4,7 @@ import adb
 from btn import Clickable
 from log import log
 import argparse
+import cv2
 
 MODE_EVENT = False
 MODE_SWAP = 5
@@ -16,6 +17,7 @@ BTN_MOOD = Clickable("mood")
 BTN_LEVEL_NAME = Clickable("level_name", delay=2.0)
 BTN_EVENT_NAME = Clickable("event_name", delay=2.0)
 
+BTN_CLOSE = Clickable("close", x=590, y=26)
 BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
 BTN_CMODE = Clickable("cmode", x=518, y=294)
 BTN_GO1 = Clickable("go1", x=459, y=247, delay=1.0)
@@ -34,6 +36,7 @@ BTN_ENHANCE = Clickable("enhance_button")
 
 
 useless_buttons = [
+    BTN_CLOSE,
     BTN_MENU_BATTLE,
     BTN_CMODE,
     BTN_GO1,
@@ -41,6 +44,14 @@ useless_buttons = [
     BTN_LOCK_CONFIRM,
     BTN_EVADE,
     BTN_GOT_IT,
+]
+
+swipes = [
+    lambda: None,
+    lambda: adb.swipe(400, 400, 1720, 880),
+    lambda: adb.swipe(1720, 200, 200, 880),
+    lambda: adb.swipe(1720, 880, 200, 200),
+    lambda: adb.swipe(200, 880, 1720, 200),
 ]
 
 
@@ -59,14 +70,21 @@ def click(x: int, y: int, w: int, h: int, delay: float):
     time.sleep(delay)
 
 
+def click_home():
+    click(608, 9, 13, 15, 3.0)
+
+
 # TODO: Refactor 'tap(randint, randint); sleep()' to 'click(x, y, w, h, delay)'
 def after_level():
     log("Collecting oil")
-    click(608, 9, 13, 15, 3.0)  # go to main menu
+    click_home()  # go to main menu
+    click_home()
 
     screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
+        cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
+        click_home()
         return
 
     adb.tap(random.randint(9, 29), random.randint(222, 242))  # open left panel
@@ -82,7 +100,9 @@ def after_level():
 
     screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
+        cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
+        click_home()
         return
 
     adb.tap(random.randint(303, 453), random.randint(1008, 1035))  # open dock
@@ -93,6 +113,7 @@ def after_level():
     # click enhance
     screen = adb.screenshot()
     if not BTN_ENHANCE.click(screen):
+        cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
         raise Exception("Error: No enhance button!")
 
     for _ in range(6):
@@ -114,7 +135,31 @@ def after_level():
         time.sleep(1.0)
 
     log("Done!")
-    click(608, 9, 13, 15, 6.0)  # go to main menu
+    click_home()  # go to main menu
+
+
+def click_boss() -> bool:
+    for sw in swipes:
+        sw()  # swipe in some direction
+        time.sleep(1.0)
+        screen = adb.screenshot()
+        if BTN_BOSS.click(screen):  # click boss
+            screen = adb.screenshot()
+            if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+                return True
+    return False
+
+
+def click_ship() -> bool:
+    for sw in swipes:
+        sw()  # swipe in some direction
+        time.sleep(1.0)
+        screen = adb.screenshot()
+        if BTN_LV.click(screen):  # click ship
+            screen = adb.screenshot()
+            if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+                return True
+    return False
 
 
 def begin_battle():
@@ -128,6 +173,7 @@ def begin_battle():
     screen = adb.screenshot()
     if BTN_MOOD.on_screen(screen):
         log("Ships in bad mood. Wait 60 min")
+        cv2.imwrite(f"warn_screens/mood_{time.time()}.png", screen)
         click(608, 9, 13, 15, 6.0)  # go to main menu
         time.sleep(60 * 60)
         log("Continue")
@@ -136,8 +182,18 @@ def begin_battle():
     BTN_BATTLE.click(screen)  # begin battle
 
 
+def restart_game():
+    log("Closing game")
+    adb.stop_game()
+    time.sleep(10.0)
+    log("Starting game")
+    adb.start_game()
+    time.sleep(20.0)
+
+
 def run():
     boss_clicks, ship_clicks, clear_count, battle_count = 0, 0, 0, 0
+    nothing_start = 0.0
     is_nothing = False
     while True:
         screen = adb.screenshot()
@@ -168,10 +224,10 @@ def run():
             # on map
             if BTN_SWITCH.on_screen(screen):
                 is_nothing = False
-                if boss_clicks < 2 and BTN_BOSS.click(screen):
+                if boss_clicks < 2 and click_boss():
                     ship_clicks = 0
                     boss_clicks += 1
-                elif ship_clicks < 2 and BTN_LV.click(screen):
+                elif ship_clicks < 2 and click_ship():
                     ship_clicks += 1
                     boss_clicks = 0
                 else:
@@ -183,6 +239,7 @@ def run():
                         random.randint(200, 880),
                     )
             elif BTN_CONFIRM.click(screen):  # after fight
+                is_nothing = False
                 screen = adb.screenshot()
                 BTN_COMMISSION.click(screen)
                 screen = adb.screenshot()
@@ -198,14 +255,18 @@ def run():
                         BTN_SWITCH.click(screen)
             else:  # nothing to do
                 if not is_nothing:
+                    nothing_start = time.time()
+                    is_nothing = True
                     log("Nothing to do")
-                is_nothing = True
+                elif time.time() - nothing_start > 60 * 5:
+                    cv2.imwrite(f"warn_screens/nothing_{time.time()}.png", screen)
+                    log("Nothing to do for 5 minutes")
+                    is_nothing = False
+                    restart_game()
                 do_nothing()
 
 
 def shot():
-    import cv2
-
     while True:
         cmd = input("Press enter... ")
         if len(cmd) > 0:

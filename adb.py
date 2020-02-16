@@ -41,3 +41,11 @@ def swipe(x1: int, y1: int, x2: int, y2: int):
 
 def back():
     shell(["input", "keyevent", "4"])
+
+
+def stop_game():
+    shell(["am", "force-stop", "com.YoStarEN.AzurLane"])
+
+
+def start_game():
+    shell(["monkey", "-p", "com.YoStarEN.AzurLane", "1"])
