@@ -9,7 +9,7 @@ from log import log
 
 class Clickable:
     def __init__(
-        self, image_name: str, x: int = -1, y: int = -1, offset_x: int = 0, offset_y: int = 0, delay: float = 5.0
+        self, image_name: str, x: int = -1, y: int = -1, offset_x: int = 0, offset_y: int = 0, delay: float = 3.0
     ):
         self.image_name = image_name
         self.image = cv2.imread(f"images/{image_name}.png", cv2.IMREAD_GRAYSCALE)
