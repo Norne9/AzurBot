@@ -9,8 +9,8 @@ import cv2
 MODE_EVENT = False
 MODE_SWAP = 5
 
-BTN_LV = Clickable("lv", offset_y=-14, delay=10.0)
-BTN_BOSS = Clickable("boss", delay=10.0)
+BTN_LV = Clickable([f"lv{i}" for i in range(5)], offset_y=-14, delay=5.0)
+BTN_BOSS = Clickable("boss", delay=5.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
 
@@ -25,6 +25,7 @@ BTN_GO2 = Clickable("go2", x=525, y=291, delay=1.0)
 BTN_EVADE = Clickable("evade", x=505, y=224)
 BTN_GOT_IT = Clickable("got_it", delay=1.0)
 BTN_AUTO = Clickable("auto", x=376, y=56, delay=1.0)
+BTN_AUTO_SUB = Clickable("auto_sub", x=377, y=84, delay=1.0)
 BTN_BATTLE = Clickable("battle", x=529, y=306, delay=40.0)
 BTN_CONFIRM = Clickable("confirm", x=511, y=321, delay=6.0)
 BTN_LOCK_CONFIRM = Clickable("lock_confirm", x=360, y=252)
@@ -116,7 +117,7 @@ def after_level():
         cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
         raise Exception("Error: No enhance button!")
 
-    for _ in range(6):
+    for _ in range(11):
         adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
         time.sleep(0.5)
         adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
@@ -138,24 +139,12 @@ def after_level():
     click_home()  # go to main menu
 
 
-def click_boss() -> bool:
+def click_ship(ship: Clickable) -> bool:
     for sw in swipes:
         sw()  # swipe in some direction
         time.sleep(1.0)
         screen = adb.screenshot()
-        if BTN_BOSS.click(screen):  # click boss
-            screen = adb.screenshot()
-            if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
-                return True
-    return False
-
-
-def click_ship() -> bool:
-    for sw in swipes:
-        sw()  # swipe in some direction
-        time.sleep(1.0)
-        screen = adb.screenshot()
-        if BTN_LV.click(screen):  # click ship
+        if ship.click(screen):  # click ship
             screen = adb.screenshot()
             if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                 return True
@@ -163,11 +152,11 @@ def click_ship() -> bool:
 
 
 def begin_battle():
-    screen = adb.screenshot()
-    BTN_AUTO.click(screen)  # enable auto
-
-    screen = adb.screenshot()
-    BTN_GOT_IT.click(screen)  # got it after auto
+    for auto in [BTN_AUTO, BTN_AUTO_SUB]:
+        screen = adb.screenshot()
+        auto.click(screen)  # enable auto
+        screen = adb.screenshot()
+        BTN_GOT_IT.click(screen)  # got it after auto
 
     #  Check mood
     screen = adb.screenshot()
@@ -224,10 +213,10 @@ def run():
             # on map
             if BTN_SWITCH.on_screen(screen):
                 is_nothing = False
-                if boss_clicks < 2 and click_boss():
+                if boss_clicks < 2 and click_ship(BTN_BOSS):
                     ship_clicks = 0
                     boss_clicks += 1
-                elif ship_clicks < 2 and click_ship():
+                elif ship_clicks < 2 and click_ship(BTN_LV):
                     ship_clicks += 1
                     boss_clicks = 0
                 else:
