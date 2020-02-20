@@ -117,7 +117,7 @@ def after_level():
         cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
         raise Exception("Error: No enhance button!")
 
-    for _ in range(11):
+    for _ in range(15):
         adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
         time.sleep(0.5)
         adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
