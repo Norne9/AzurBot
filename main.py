@@ -117,7 +117,7 @@ def after_level():
         cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
         raise Exception("Error: No enhance button!")
 
-    for _ in range(15):
+    for _ in range(20):
         adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
         time.sleep(0.5)
         adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
@@ -140,7 +140,7 @@ def after_level():
 
 
 def click_ship(ship: Clickable) -> bool:
-    for sw in swipes:
+    for i, sw in enumerate(swipes):
         sw()  # swipe in some direction
         time.sleep(1.0)
         screen = adb.screenshot()
@@ -148,6 +148,8 @@ def click_ship(ship: Clickable) -> bool:
             screen = adb.screenshot()
             if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                 return True
+        else:  # for debug purposes
+            cv2.imwrite(f"warn_screens/swipe{i}/{time.time()}.png", screen)
     return False
 
 
