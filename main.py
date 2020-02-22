@@ -30,6 +30,9 @@ BTN_BATTLE = Clickable("battle", x=529, y=306, delay=40.0)
 BTN_CONFIRM = Clickable("confirm", x=511, y=321, delay=6.0)
 BTN_LOCK_CONFIRM = Clickable("lock_confirm", x=360, y=252)
 BTN_COMMISSION = Clickable("commission", x=284, y=252)
+BTN_RECONNECT = Clickable("reconnect", x=360, y=252)
+BTN_DOWNLOAD = Clickable("download", x=364, y=242)
+BTN_UPDATE = Clickable("update", x=284, y=251)
 
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
@@ -37,6 +40,8 @@ BTN_ENHANCE = Clickable("enhance_button")
 
 
 useless_buttons = [
+    BTN_RECONNECT,
+    BTN_DOWNLOAD,
     BTN_CLOSE,
     BTN_MENU_BATTLE,
     BTN_CMODE,
@@ -148,8 +153,8 @@ def click_ship(ship: Clickable) -> bool:
             screen = adb.screenshot()
             if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                 return True
-        else:  # for debug purposes
-            cv2.imwrite(f"warn_screens/swipe{i}/{time.time()}.png", screen)
+        # else:  # for debug purposes
+        #    cv2.imwrite(f"warn_screens/swipe{i}/{time.time()}.png", screen)
     return False
 
 
@@ -244,6 +249,9 @@ def run():
                     if battle_count >= MODE_SWAP:
                         battle_count = 0
                         BTN_SWITCH.click(screen)
+            elif BTN_UPDATE.on_screen(screen):  # game requested update
+                is_nothing = False
+                restart_game()
             else:  # nothing to do
                 if not is_nothing:
                     nothing_start = time.time()
