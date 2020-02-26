@@ -204,6 +204,7 @@ def run():
 
         if BTN_BATTLE.on_screen(screen):
             is_nothing = False
+            boss_clicks, ship_clicks = 0, 0
             begin_battle()
             continue
 
