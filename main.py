@@ -37,7 +37,7 @@ BTN_UPDATE = Clickable("update", x=284, y=251)
 
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
-BTN_ENHANCE = Clickable("enhance_button")
+BTN_ENHANCE = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
 
 
 useless_buttons = [
@@ -96,7 +96,7 @@ def after_level():
     click_home()  # go to main menu
     click_home()
 
-    screen = screenshot()
+    screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
         cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
@@ -114,7 +114,7 @@ def after_level():
     adb.back()  # close left panel
     time.sleep(3.0)
 
-    screen = screenshot()
+    screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
         cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
@@ -126,24 +126,23 @@ def after_level():
     adb.tap(random.randint(189, 297), random.randint(195, 342))  # click first ship
     time.sleep(3.0)
 
-    # click enhance
-    screen = screenshot()
-    if not BTN_ENHANCE.click(screen):
-        cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
-        raise Exception("Error: No enhance button!")
-
     for _ in range(20):
-        adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
-        time.sleep(0.5)
-        adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
-        time.sleep(1.0)
-
+        # click enhance
         screen = screenshot()
-        if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
+        if BTN_ENHANCE.click(screen):
+            adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
+            time.sleep(0.5)
+            adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
+            time.sleep(1.0)
+
             screen = screenshot()
-            if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
-                adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
-                time.sleep(2.0)
+            if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
+                screen = screenshot()
+                if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
+                    adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
+                    time.sleep(2.0)
+        else:
+            print("No enhance button!")
 
         adb.swipe(
             random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
