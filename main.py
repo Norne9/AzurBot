@@ -142,7 +142,7 @@ def after_level():
                     adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
                     time.sleep(2.0)
         else:
-            print("No enhance button!")
+            log("No enhance button!")
 
         adb.swipe(
             random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
