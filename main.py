@@ -11,6 +11,7 @@ MODE_SWAP = 5
 
 BTN_LV = Clickable([f"lv{i}" for i in range(5)], offset_y=-14, delay=5.0)
 BTN_BOSS = Clickable("boss", delay=5.0)
+BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
 
@@ -52,6 +53,15 @@ useless_buttons = [
     BTN_GOT_IT,
 ]
 
+
+def screenshot():
+    screen = adb.screenshot()
+    for btn in useless_buttons:
+        if btn.click(screen):
+            return screenshot()
+    return screen
+
+
 swipes = [
     lambda: None,
     lambda: adb.swipe(400, 400, 1720, 880),
@@ -86,7 +96,7 @@ def after_level():
     click_home()  # go to main menu
     click_home()
 
-    screen = adb.screenshot()
+    screen = screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
         cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
@@ -104,7 +114,7 @@ def after_level():
     adb.back()  # close left panel
     time.sleep(3.0)
 
-    screen = adb.screenshot()
+    screen = screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
         cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
         log("Something went wrong")
@@ -117,7 +127,7 @@ def after_level():
     time.sleep(3.0)
 
     # click enhance
-    screen = adb.screenshot()
+    screen = screenshot()
     if not BTN_ENHANCE.click(screen):
         cv2.imwrite(f"warn_screens/enhance_{time.time()}.png", screen)
         raise Exception("Error: No enhance button!")
@@ -128,9 +138,9 @@ def after_level():
         adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
         time.sleep(1.0)
 
-        screen = adb.screenshot()
+        screen = screenshot()
         if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
-            screen = adb.screenshot()
+            screen = screenshot()
             if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
                 adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
                 time.sleep(2.0)
@@ -148,9 +158,9 @@ def click_ship(ship: Clickable) -> bool:
     for i, sw in enumerate(swipes):
         sw()  # swipe in some direction
         time.sleep(1.0)
-        screen = adb.screenshot()
+        screen = screenshot()
         if ship.click(screen):  # click ship
-            screen = adb.screenshot()
+            screen = screenshot()
             if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                 return True
         # else:  # for debug purposes
@@ -160,13 +170,11 @@ def click_ship(ship: Clickable) -> bool:
 
 def begin_battle():
     for auto in [BTN_AUTO, BTN_AUTO_SUB]:
-        screen = adb.screenshot()
+        screen = screenshot()
         auto.click(screen)  # enable auto
-        screen = adb.screenshot()
-        BTN_GOT_IT.click(screen)  # got it after auto
 
     #  Check mood
-    screen = adb.screenshot()
+    screen = screenshot()
     if BTN_MOOD.on_screen(screen):
         log("Ships in bad mood. Wait 60 min")
         cv2.imwrite(f"warn_screens/mood_{time.time()}.png", screen)
@@ -174,7 +182,7 @@ def begin_battle():
         time.sleep(60 * 60)
         log("Continue")
 
-    screen = adb.screenshot()
+    screen = screenshot()
     BTN_BATTLE.click(screen)  # begin battle
 
 
@@ -192,7 +200,7 @@ def run():
     nothing_start = 0.0
     is_nothing = False
     while True:
-        screen = adb.screenshot()
+        screen = screenshot()
         time.sleep(1.0)
 
         if BTN_BATTLE.on_screen(screen):
@@ -210,59 +218,61 @@ def run():
         if MODE_EVENT and BTN_EVENT_NAME.click(screen):
             continue
 
-        # go buttons & etc
-        for btn in useless_buttons:
-            if btn.click(screen):
-                boss_clicks, ship_clicks = 0, 0
-                is_nothing = False
-                break
-        else:  # buttons not pressed
-            # on map
-            if BTN_SWITCH.on_screen(screen):
-                is_nothing = False
-                if boss_clicks < 2 and click_ship(BTN_BOSS):
-                    ship_clicks = 0
-                    boss_clicks += 1
-                elif ship_clicks < 2 and click_ship(BTN_LV):
-                    ship_clicks += 1
-                    boss_clicks = 0
+        # on map
+        if BTN_SWITCH.on_screen(screen):
+            is_nothing = False
+            # 3 question click try's
+            for _ in range(3):
+                if BTN_QUESTION.click(screen):
+                    screen = screenshot()
                 else:
-                    ship_clicks = 0
-                    adb.swipe(  # random swipe
-                        random.randint(200, 1720),
-                        random.randint(200, 880),
-                        random.randint(200, 1720),
-                        random.randint(200, 880),
-                    )
-            elif BTN_CONFIRM.click(screen):  # after fight
-                is_nothing = False
-                screen = adb.screenshot()
-                BTN_COMMISSION.click(screen)
-                screen = adb.screenshot()
-                if BTN_LEVEL_NAME.on_screen(screen) or BTN_EVENT_NAME.on_screen(screen):  # level finished
-                    clear_count += 1
+                    break
+            # 2 boss click try's
+            if boss_clicks < 2 and click_ship(BTN_BOSS):
+                ship_clicks = 0
+                boss_clicks += 1
+            # 2 ship click try's
+            elif ship_clicks < 2 and click_ship(BTN_LV):
+                ship_clicks += 1
+                boss_clicks = 0
+            # nothing worked
+            else:
+                ship_clicks = 0
+                adb.swipe(  # random swipe
+                    random.randint(200, 1720),
+                    random.randint(200, 880),
+                    random.randint(200, 1720),
+                    random.randint(200, 880),
+                )
+        elif BTN_CONFIRM.click(screen):  # after fight
+            is_nothing = False
+            screen = screenshot()
+            BTN_COMMISSION.click(screen)
+            screen = screenshot()
+            if BTN_LEVEL_NAME.on_screen(screen) or BTN_EVENT_NAME.on_screen(screen):  # level finished
+                clear_count += 1
+                battle_count = 0
+                if clear_count % 2 == 0:
+                    after_level()
+            elif BTN_SWITCH.on_screen(screen):  # fight finished
+                battle_count += 1
+                if battle_count >= MODE_SWAP:
                     battle_count = 0
-                    if clear_count % 3 == 0:
-                        after_level()
-                elif BTN_SWITCH.on_screen(screen):  # fight finished
-                    battle_count += 1
-                    if battle_count >= MODE_SWAP:
-                        battle_count = 0
-                        BTN_SWITCH.click(screen)
-            elif BTN_UPDATE.on_screen(screen):  # game requested update
+                    BTN_SWITCH.click(screen)
+        elif BTN_UPDATE.on_screen(screen):  # game requested update
+            is_nothing = False
+            restart_game()
+        else:  # nothing to do
+            if not is_nothing:
+                nothing_start = time.time()
+                is_nothing = True
+                log("Nothing to do")
+            elif time.time() - nothing_start > 60 * 5:
+                cv2.imwrite(f"warn_screens/nothing_{time.time()}.png", screen)
+                log("Nothing to do for 5 minutes")
                 is_nothing = False
                 restart_game()
-            else:  # nothing to do
-                if not is_nothing:
-                    nothing_start = time.time()
-                    is_nothing = True
-                    log("Nothing to do")
-                elif time.time() - nothing_start > 60 * 5:
-                    cv2.imwrite(f"warn_screens/nothing_{time.time()}.png", screen)
-                    log("Nothing to do for 5 minutes")
-                    is_nothing = False
-                    restart_game()
-                do_nothing()
+            do_nothing()
 
 
 def shot():
