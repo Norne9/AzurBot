@@ -177,9 +177,10 @@ def begin_battle():
     if BTN_MOOD.on_screen(screen):
         log("Ships in bad mood. Wait 60 min")
         cv2.imwrite(f"warn_screens/mood_{time.time()}.png", screen)
-        click(608, 9, 13, 15, 6.0)  # go to main menu
+        click_home()  # go to main menu
         time.sleep(60 * 60)
         log("Continue")
+        return
 
     screen = screenshot()
     BTN_BATTLE.click(screen)  # begin battle
@@ -195,7 +196,7 @@ def restart_game():
 
 
 def run():
-    boss_clicks, ship_clicks, clear_count, battle_count = 0, 0, 0, 0
+    boss_clicks, ship_clicks, clear_count, battle_count, battle_clicks = 0, 0, 0, 0, 0
     nothing_start = 0.0
     is_nothing = False
     while True:
@@ -205,8 +206,14 @@ def run():
         if BTN_BATTLE.on_screen(screen):
             is_nothing = False
             boss_clicks, ship_clicks = 0, 0
+            battle_clicks += 1
+            if battle_clicks > 3:  # battle don't work, collect oil
+                after_level()
+                continue
             begin_battle()
             continue
+        else:
+            battle_clicks = 0
 
         # level selection
         if BTN_LEVEL_NAME.on_screen(screen):
