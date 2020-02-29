@@ -19,6 +19,7 @@ BTN_LEVEL_NAME = Clickable("level_name", delay=2.0)
 BTN_EVENT_NAME = Clickable("event_name", delay=2.0)
 
 BTN_CLOSE = Clickable("close", x=590, y=26)
+BTN_ITEM = Clickable("item", x=273, y=107)
 BTN_MENU_BATTLE = Clickable("menu_battle", x=507, y=150)
 BTN_CMODE = Clickable("cmode", x=518, y=294)
 BTN_GO1 = Clickable("go1", x=459, y=247, delay=1.0)
@@ -41,6 +42,7 @@ BTN_ENHANCE = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
 
 
 useless_buttons = [
+    BTN_ITEM,
     BTN_RECONNECT,
     BTN_DOWNLOAD,
     BTN_CLOSE,
@@ -157,14 +159,24 @@ def click_ship(ship: Clickable) -> bool:
     for i, sw in enumerate(swipes):
         sw()  # swipe in some direction
         time.sleep(1.0)
+        click_question()
         screen = screenshot()
         if ship.click(screen):  # click ship
             screen = screenshot()
             if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                 return True
-        # else:  # for debug purposes
-        #    cv2.imwrite(f"warn_screens/swipe{i}/{time.time()}.png", screen)
+        elif not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+            return True
     return False
+
+
+def click_question():
+    screen = screenshot()
+    for _ in range(3):
+        if BTN_QUESTION.click(screen):
+            screen = screenshot()
+        else:
+            break
 
 
 def begin_battle():
@@ -228,12 +240,6 @@ def run():
         # on map
         if BTN_SWITCH.on_screen(screen):
             is_nothing = False
-            # 3 question click try's
-            for _ in range(3):
-                if BTN_QUESTION.click(screen):
-                    screen = screenshot()
-                else:
-                    break
             # 2 boss click try's
             if boss_clicks < 2 and click_ship(BTN_BOSS):
                 ship_clicks = 0
