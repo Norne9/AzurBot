@@ -9,7 +9,7 @@ import cv2
 MODE_EVENT = False
 MODE_SWAP = 5
 
-BTN_LV = Clickable([f"lv{i}" for i in range(5)], offset_y=-14, delay=5.0)
+BTN_LV = Clickable([f"lv{i}" for i in range(3)], offset_y=-18, delay=5.0)
 BTN_BOSS = Clickable("boss", delay=5.0)
 BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
 BTN_SWITCH = Clickable("switch")
