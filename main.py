@@ -35,6 +35,7 @@ BTN_COMMISSION = Clickable("commission", x=284, y=252)
 BTN_RECONNECT = Clickable("reconnect", x=360, y=252)
 BTN_DOWNLOAD = Clickable("download", x=364, y=242)
 BTN_UPDATE = Clickable("update", x=284, y=251)
+BTN_RETREAT = Clickable("retreat", x=380, y=330)
 
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
@@ -208,7 +209,7 @@ def restart_game():
 
 
 def run():
-    boss_clicks, ship_clicks, clear_count, battle_count, battle_clicks = 0, 0, 0, 0, 0
+    clear_count, battle_count, battle_clicks = 0, 0, 0
     nothing_start = 0.0
     is_nothing = False
     while True:
@@ -240,23 +241,14 @@ def run():
         # on map
         if BTN_SWITCH.on_screen(screen):
             is_nothing = False
-            # 2 boss click try's
-            if boss_clicks < 2 and click_ship(BTN_BOSS):
-                ship_clicks = 0
-                boss_clicks += 1
-            # 2 ship click try's
-            elif ship_clicks < 2 and click_ship(BTN_LV):
-                ship_clicks += 1
-                boss_clicks = 0
-            # nothing worked
-            else:
-                ship_clicks = 0
-                adb.swipe(  # random swipe
-                    random.randint(200, 1720),
-                    random.randint(200, 880),
-                    random.randint(200, 1720),
-                    random.randint(200, 880),
-                )
+            if not click_ship(BTN_BOSS):
+                for _ in range(2):
+                    if click_ship(BTN_LV):
+                        break
+                    log("Ships not found")
+                else:
+                    screen = screenshot()
+                    BTN_RETREAT.click(screen)
         elif BTN_CONFIRM.click(screen):  # after fight
             is_nothing = False
             screen = screenshot()
