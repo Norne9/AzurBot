@@ -5,6 +5,7 @@ from btn import Clickable
 from log import log
 import argparse
 import cv2
+import img
 
 MODE_EVENT = False
 MODE_SWAP = 5
@@ -171,6 +172,28 @@ def click_ship(ship: Clickable) -> bool:
     return False
 
 
+def click_enemy() -> bool:
+    find_funs = [
+        lambda s: img.find_zones_color(s, (148, 235, 255), (3, 3)),  # 1-2 triangles
+        lambda s: img.find_zones_color(s, (132, 134, 255), (2, 2)),  # 3 triangles
+    ]
+    for fun in find_funs:
+        for sw in swipes:
+            sw()  # swipe in some direction
+            time.sleep(1.0)
+            click_question()
+            screenshot()  # click buttons
+            ships = fun(adb.screenshot(False))  # find triangles
+            for x, y in ships:
+                log(f"Tap ship [{x}, {y}]")
+                adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
+                time.sleep(6.0)
+                screen = screenshot()
+                if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+                    return True
+    return False
+
+
 def click_question():
     screen = screenshot()
     for _ in range(3):
@@ -218,7 +241,6 @@ def run():
 
         if BTN_BATTLE.on_screen(screen):
             is_nothing = False
-            boss_clicks, ship_clicks = 0, 0
             battle_clicks += 1
             if battle_clicks > 3:  # battle don't work, collect oil
                 after_level()
@@ -241,12 +263,11 @@ def run():
         # on map
         if BTN_SWITCH.on_screen(screen):
             is_nothing = False
-            if not click_ship(BTN_BOSS):
-                for _ in range(2):
-                    if click_ship(BTN_LV):
-                        break
+            log("Searching boss")
+            if not click_ship(BTN_BOSS):  # try click boss
+                log("Searching ships")
+                if not click_enemy():  # try click ships
                     log("Ships not found")
-                else:
                     screen = screenshot()
                     BTN_RETREAT.click(screen)
         elif BTN_CONFIRM.click(screen):  # after fight
@@ -283,9 +304,12 @@ def run():
 def shot():
     while True:
         cmd = input("Press enter... ")
-        if len(cmd) > 0:
+        if cmd == "c":
+            screen = adb.screenshot(False)
+        elif len(cmd) > 0:
             break
-        screen = adb.screenshot()
+        else:
+            screen = adb.screenshot()
         cv2.imwrite(f"screenshots/{time.time()}.png", screen)
 
 

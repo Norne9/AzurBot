@@ -14,7 +14,7 @@ def shell(cmd: List[str]) -> str:
         return out.replace(b"\r\n", b"\n").decode().strip()
 
 
-def screenshot():
+def screenshot(low_quality: bool = True):
     with subprocess.Popen(
         ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     ) as proc:
@@ -22,11 +22,13 @@ def screenshot():
         if len(err) > 0:
             raise Exception(f"ADB {err.decode()}")
     # load
+    if low_quality:
+        image = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)
+        resized = cv2.resize(image, (image.shape[1] // 3, image.shape[0] // 3), interpolation=cv2.INTER_AREA)
+    else:
+        resized = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_COLOR)
 
-    image = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)
-    # resize
-    resized = cv2.resize(image, (image.shape[1] // 3, image.shape[0] // 3), interpolation=cv2.INTER_AREA)
-    if image.shape[0] > image.shape[1]:
+    if resized.shape[0] > resized.shape[1]:
         resized = cv2.rotate(resized, cv2.ROTATE_90_COUNTERCLOCKWISE)
     return resized
 
