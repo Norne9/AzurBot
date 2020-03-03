@@ -9,6 +9,7 @@ import img
 
 MODE_EVENT = False
 MODE_SWAP = 5
+MODE_BOSS = 3
 
 BTN_LV = Clickable([f"lv{i}" for i in range(3)], offset_y=-18, delay=5.0)
 BTN_BOSS = Clickable("boss", delay=5.0)
@@ -130,7 +131,7 @@ def after_level():
     adb.tap(random.randint(189, 297), random.randint(195, 342))  # click first ship
     time.sleep(3.0)
 
-    for _ in range(20):
+    for _ in range(8):
         # click enhance
         screen = screenshot()
         if BTN_ENHANCE.click(screen):
@@ -158,6 +159,7 @@ def after_level():
 
 
 def click_ship(ship: Clickable) -> bool:
+    log(f"Searching {ship.image_names[0]}")
     for i, sw in enumerate(swipes):
         sw()  # swipe in some direction
         time.sleep(1.0)
@@ -232,7 +234,7 @@ def restart_game():
 
 
 def run():
-    clear_count, battle_count, battle_clicks = 0, 0, 0
+    clear_count, battle_count, battle_clicks, = 0, 0, 0
     nothing_start = 0.0
     is_nothing = False
     while True:
@@ -263,8 +265,7 @@ def run():
         # on map
         if BTN_SWITCH.on_screen(screen):
             is_nothing = False
-            log("Searching boss")
-            if not click_ship(BTN_BOSS):  # try click boss
+            if battle_count < MODE_SWAP or not click_ship(BTN_BOSS):  # try click boss
                 log("Searching ships")
                 if not click_enemy():  # try click ships
                     log("Ships not found")
@@ -282,8 +283,7 @@ def run():
                     after_level()
             elif BTN_SWITCH.on_screen(screen):  # fight finished
                 battle_count += 1
-                if battle_count >= MODE_SWAP:
-                    battle_count = 0
+                if battle_count > 0 and battle_count % MODE_SWAP == 0:
                     BTN_SWITCH.click(screen)
         elif BTN_UPDATE.on_screen(screen):  # game requested update
             is_nothing = False
@@ -318,8 +318,9 @@ if __name__ == "__main__":
     parser.add_argument("--event", action="store_true", help="Farm event")
     parser.add_argument("-s", action="store_true", help="Make screenshots")
     parser.add_argument("--swap", action="store", type=int, default=5, help="Battle count before swap")
+    parser.add_argument("--boss", action="store", type=int, default=5, help="Battle count before boss checking")
     args = parser.parse_args()
-    MODE_EVENT, MODE_SWAP = args.event, args.swap
+    MODE_EVENT, MODE_SWAP, MODE_BOSS = args.event, args.swap, args.boss
 
     log(adb.shell(["echo", '"Android connected!"']))
     if args.s:
