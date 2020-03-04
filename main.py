@@ -236,7 +236,7 @@ def restart_game():
 def run():
     clear_count, battle_count, battle_clicks, = 0, 0, 0
     nothing_start = 0.0
-    is_nothing = False
+    is_nothing, clicked_boss = False, False
     while True:
         screen = screenshot()
         time.sleep(1.0)
@@ -266,17 +266,21 @@ def run():
         if BTN_SWITCH.on_screen(screen):
             is_nothing = False
             if battle_count < MODE_SWAP or not click_ship(BTN_BOSS):  # try click boss
+                clicked_boss = False
                 log("Searching ships")
                 if not click_enemy():  # try click ships
                     log("Ships not found")
                     screen = screenshot()
                     BTN_RETREAT.click(screen)
+            else:
+                clicked_boss = True
         elif BTN_CONFIRM.click(screen):  # after fight
             is_nothing = False
             screen = screenshot()
             BTN_COMMISSION.click(screen)
             screen = screenshot()
-            if BTN_LEVEL_NAME.on_screen(screen) or BTN_EVENT_NAME.on_screen(screen):  # level finished
+            if clicked_boss:  # level finished
+                log("Boss killed")
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
