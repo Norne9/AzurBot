@@ -43,7 +43,7 @@ def find_zones_color(
     result = []
     for pt in locks:  # Switch collumns and rows
         x, y = pt[0] + 40, pt[1] + 30
-        if (x > 1850) or (x > 1000 and y > 880):  # ignore stars & buttons
+        if (x > 1850) or (x > 1000 and y > 880) or (x < 733 and y < 245):  # ignore stars & buttons
             continue
         # check if its already exists
         for rx, ry in result:
