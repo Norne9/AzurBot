@@ -131,7 +131,8 @@ def after_level():
     adb.tap(random.randint(189, 297), random.randint(195, 342))  # click first ship
     time.sleep(3.0)
 
-    for _ in range(8):
+    no_enhance = 0
+    while no_enhance < 4:
         # click enhance
         screen = screenshot()
         if BTN_ENHANCE.click(screen):
@@ -142,10 +143,13 @@ def after_level():
 
             screen = screenshot()
             if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
+                no_enhance = 0
                 screen = screenshot()
                 if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
                     adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
                     time.sleep(2.0)
+            else:
+                no_enhance += 1
         else:
             log("No enhance button!")
 
@@ -189,10 +193,11 @@ def click_enemy() -> bool:
             for x, y in ships:
                 log(f"Tap ship [{x}, {y}]")
                 adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
-                time.sleep(6.0)
-                screen = screenshot()
-                if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
-                    return True
+                for _ in range(6):  # wait 6 seconds max
+                    time.sleep(1.0)
+                    screen = screenshot()
+                    if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+                        return True
     return False
 
 
