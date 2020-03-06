@@ -11,8 +11,7 @@ MODE_EVENT = False
 MODE_SWAP = 5
 MODE_BOSS = 3
 
-BTN_LV = Clickable([f"lv{i}" for i in range(3)], offset_y=-18, delay=5.0)
-BTN_BOSS = Clickable("boss", delay=5.0)
+BTN_BOSS = Clickable("boss", delay=7.0)
 BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
@@ -191,10 +190,10 @@ def click_enemy() -> bool:
             screenshot()  # click buttons
             ships = fun(adb.screenshot(False))  # find triangles
             for x, y in ships:
-                log(f"Tap ship [{x}, {y}]")
-                adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
-                for _ in range(6):  # wait 6 seconds max
-                    time.sleep(1.0)
+                for _ in range(2):  # 2 click try's
+                    log(f"Tap ship [{x}, {y}], waiting 7.0s")
+                    adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
+                    time.sleep(7.0)
                     screen = screenshot()
                     if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
                         return True
