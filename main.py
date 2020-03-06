@@ -38,6 +38,9 @@ BTN_DOWNLOAD = Clickable("download", x=364, y=242)
 BTN_UPDATE = Clickable("update", x=284, y=251)
 BTN_RETREAT = Clickable("retreat", x=380, y=330)
 
+BTN_SORT = Clickable("sort", x=555, y=7)
+BTN_SORT_CONFIRM = Clickable("sort_confirm", x=369, y=314)
+BTN_ENHANCEABLE = Clickable("enhanceable", x=380, y=270)
 BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
 BTN_ENHANCE = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
@@ -127,24 +130,27 @@ def after_level():
 
     adb.tap(random.randint(303, 453), random.randint(1008, 1035))  # open dock
     time.sleep(3.0)
+
+    BTN_SORT.click(screenshot())
+    if screenshot()[275, 379] > 130:
+        click(384, 260, 57, 14, 1.0)
+    BTN_SORT_CONFIRM.click(screenshot())
+
     adb.tap(random.randint(189, 297), random.randint(195, 342))  # click first ship
     time.sleep(3.0)
 
     no_enhance = 0
     while no_enhance < 4:
         # click enhance
-        screen = screenshot()
-        if BTN_ENHANCE.click(screen):
+        if BTN_ENHANCE.click(screenshot()):
             adb.tap(random.randint(1470, 1602), random.randint(909, 933))  # press fill button
             time.sleep(0.5)
             adb.tap(random.randint(1725, 1857), random.randint(909, 933))  # press enhance button
             time.sleep(1.0)
 
-            screen = screenshot()
-            if BTN_ENHANCE_CONFIRM.click(screen):  # press confirm
+            if BTN_ENHANCE_CONFIRM.click(screenshot()):  # press confirm
                 no_enhance = 0
-                screen = screenshot()
-                if BTN_ENHANCE_BREAK.click(screen):  # press disassemble
+                if BTN_ENHANCE_BREAK.click(screenshot()):  # press disassemble
                     adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
                     time.sleep(2.0)
             else:
@@ -194,25 +200,20 @@ def click_enemy() -> bool:
                     log(f"Tap ship [{x}, {y}], waiting 7.0s")
                     adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
                     time.sleep(7.0)
-                    screen = screenshot()
-                    if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
+                    if not BTN_SWITCH.on_screen(screenshot()):  # success if switch disappeared
                         return True
     return False
 
 
 def click_question():
-    screen = screenshot()
     for _ in range(3):
-        if BTN_QUESTION.click(screen):
-            screen = screenshot()
-        else:
+        if not BTN_QUESTION.click(screenshot()):
             break
 
 
 def begin_battle():
     for auto in [BTN_AUTO, BTN_AUTO_SUB]:
-        screen = screenshot()
-        auto.click(screen)  # enable auto
+        auto.click(screenshot())  # enable auto
 
     #  Check mood
     screen = screenshot()
@@ -224,8 +225,7 @@ def begin_battle():
         log("Continue")
         return
 
-    screen = screenshot()
-    BTN_BATTLE.click(screen)  # begin battle
+    BTN_BATTLE.click(screenshot())  # begin battle
 
 
 def restart_game():
@@ -263,7 +263,7 @@ def run():
             else:
                 BTN_LEVEL_NAME.click(screen)
             continue
-        if MODE_EVENT and BTN_EVENT_NAME.click(screen):
+        elif MODE_EVENT and BTN_EVENT_NAME.click(screen):
             continue
 
         # on map
@@ -274,22 +274,19 @@ def run():
                 log("Searching ships")
                 if not click_enemy():  # try click ships
                     log("Ships not found")
-                    screen = screenshot()
-                    BTN_RETREAT.click(screen)
+                    BTN_RETREAT.click(screenshot())
             else:
                 clicked_boss = True
         elif BTN_CONFIRM.click(screen):  # after fight
             is_nothing = False
-            screen = screenshot()
-            BTN_COMMISSION.click(screen)
-            screen = screenshot()
+            BTN_COMMISSION.click(screenshot())
             if clicked_boss:  # level finished
                 log("Boss killed")
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
                     after_level()
-            elif BTN_SWITCH.on_screen(screen):  # fight finished
+            elif BTN_SWITCH.on_screen(screenshot()):  # fight finished
                 battle_count += 1
                 if battle_count > 0 and battle_count % MODE_SWAP == 0:
                     BTN_SWITCH.click(screen)
