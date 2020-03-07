@@ -280,16 +280,17 @@ def run():
             battle_clicks = 0
             is_nothing = False
             BTN_COMMISSION.click(screenshot())
-            if clicked_boss:  # level finished
+            screen = screenshot()
+            if BTN_SWITCH.on_screen(screen):  # fight finished
+                battle_count += 1
+                if battle_count > 0 and battle_count % MODE_SWAP == 0:
+                    BTN_SWITCH.click(screen)
+            elif clicked_boss:  # level finished
                 log("Boss killed")
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
                     after_level()
-            elif BTN_SWITCH.on_screen(screenshot()):  # fight finished
-                battle_count += 1
-                if battle_count > 0 and battle_count % MODE_SWAP == 0:
-                    BTN_SWITCH.click(screen)
         elif BTN_UPDATE.on_screen(screen):  # game requested update
             is_nothing = False
             restart_game()
