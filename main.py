@@ -249,12 +249,11 @@ def run():
             is_nothing = False
             battle_clicks += 1
             if battle_clicks > 3:  # battle don't work, collect oil
+                battle_clicks = 0
                 after_level()
                 continue
             begin_battle()
             continue
-        else:
-            battle_clicks = 0
 
         # level selection
         if BTN_LEVEL_NAME.on_screen(screen):
@@ -278,6 +277,7 @@ def run():
             else:
                 clicked_boss = True
         elif BTN_CONFIRM.click(screen):  # after fight
+            battle_clicks = 0
             is_nothing = False
             BTN_COMMISSION.click(screenshot())
             if clicked_boss:  # level finished
