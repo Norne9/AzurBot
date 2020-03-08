@@ -274,6 +274,7 @@ def run():
                 if not click_enemy():  # try click ships
                     log("Ships not found")
                     BTN_RETREAT.click(screenshot())
+                    battle_count, battle_clicks = 0, 0
             else:
                 clicked_boss = True
         elif BTN_CONFIRM.click(screen):  # after fight
