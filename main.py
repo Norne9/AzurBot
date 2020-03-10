@@ -32,6 +32,7 @@ BTN_AUTO_SUB = Clickable("auto_sub", x=377, y=84, delay=1.0)
 BTN_BATTLE = Clickable("battle", x=529, y=306, delay=40.0)
 BTN_CONFIRM = Clickable("confirm", x=511, y=321, delay=6.0)
 BTN_LOCK_CONFIRM = Clickable("lock_confirm", x=360, y=252)
+BTN_LOSE_CONFIRM = Clickable("lose_confirm", x=286, y=258)
 BTN_COMMISSION = Clickable("commission", x=284, y=252)
 BTN_RECONNECT = Clickable("reconnect", x=360, y=252)
 BTN_DOWNLOAD = Clickable("download", x=364, y=242)
@@ -56,6 +57,7 @@ useless_buttons = [
     BTN_GO1,
     BTN_GO2,
     BTN_LOCK_CONFIRM,
+    BTN_LOSE_CONFIRM,
     BTN_EVADE,
     BTN_GOT_IT,
 ]
