@@ -9,7 +9,7 @@ import img
 
 MODE_EVENT = False
 MODE_SWAP = 5
-MODE_BOSS = 3
+MODE_BOSS = 2
 
 BTN_BOSS = Clickable("boss", delay=7.0)
 BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
@@ -53,7 +53,7 @@ useless_buttons = [
     BTN_DOWNLOAD,
     BTN_CLOSE,
     BTN_MENU_BATTLE,
-    BTN_CMODE,
+    # BTN_CMODE,
     BTN_GO1,
     BTN_GO2,
     BTN_LOCK_CONFIRM,
@@ -187,7 +187,7 @@ def click_ship(ship: Clickable) -> bool:
 
 def click_enemy() -> bool:
     find_funs = [
-        lambda s: img.find_zones_color(s, (148, 235, 255), (3, 3)),  # 1-2 triangles
+        lambda s: img.find_zones_color(s, (148, 235, 255), (2, 2)),  # 1-2 triangles
         lambda s: img.find_zones_color(s, (132, 134, 255), (2, 2)),  # 3 triangles
     ]
     for fun in find_funs:

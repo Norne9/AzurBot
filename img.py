@@ -37,7 +37,7 @@ def find_zones_color(
 
     res = cv2.matchTemplate(screen, template, cv2.TM_SQDIFF)
 
-    loc = np.where(res < 0.1)
+    loc = np.where(res < 32)
     locks = zip(*loc[::-1])
 
     result = []
