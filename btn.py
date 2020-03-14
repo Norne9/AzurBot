@@ -44,13 +44,13 @@ class Clickable:
 
     def __on_screen(self, screen: np.ndarray, image: np.ndarray) -> bool:
         if self.x < 0:  # find mode
-            return len(img.find_zones(screen, image, 0.7)) > 0
+            return len(img.find_zones(screen, image, 0.8)) > 0
         # check mode
         return img.check_zone(screen, image, self.x, self.y) > 0.9
 
     def __click(self, screen: np.ndarray, image: np.ndarray) -> bool:
         if self.x < 0:  # find mode
-            zones = img.find_zones(screen, image, 0.7)
+            zones = img.find_zones(screen, image, 0.8)
             if len(zones) == 0:
                 return False
             x, y, w, h = random.choice(zones)

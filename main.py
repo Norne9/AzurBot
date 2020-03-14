@@ -326,8 +326,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bot for farming in Azur Lane")
     parser.add_argument("--event", action="store_true", help="Farm event")
     parser.add_argument("-s", action="store_true", help="Make screenshots")
-    parser.add_argument("--swap", action="store", type=int, default=5, help="Battle count before swap")
-    parser.add_argument("--boss", action="store", type=int, default=2, help="Battle count before boss checking")
+    parser.add_argument("--swap", action="store", type=int, default=MODE_SWAP, help="Battle count before swap")
+    parser.add_argument("--boss", action="store", type=int, default=MODE_BOSS, help="Battle count before boss checking")
     args = parser.parse_args()
     MODE_EVENT, MODE_SWAP, MODE_BOSS = args.event, args.swap, args.boss
 
