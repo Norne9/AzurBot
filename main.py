@@ -46,6 +46,14 @@ BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
 BTN_ENHANCE = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
 
+BTN_COMMISSION_COMPLETED = Clickable("commission_completed", x=192, y=136, delay=6.0)
+BTN_COMMISSION_S = Clickable("commission_s", delay=6.0)
+BTN_COMMISSION_GO = Clickable("commission_go", x=213, y=134, delay=2.0)
+BTN_COMMISSION_0 = Clickable("commission_0", x=541, y=10)
+BTN_COMMISSION_NEW = Clickable("commission_new", delay=2.0)
+BTN_COMMISSION_RECOMMEND = Clickable("commission_recommend", delay=2.0)
+BTN_COMMISSION_READY = Clickable("commission_ready", delay=2.0)
+BTN_COMMISSION_CONFIRM = Clickable("commission_confirm", x=361, y=257, delay=6.0)
 
 useless_buttons = [
     BTN_ITEM,
@@ -119,10 +127,10 @@ def after_level():
     adb.tap(random.randint(582, 672), random.randint(99, 117))  # tap money
     time.sleep(3.0)
 
-    log("Removing trash")
-    adb.back()  # close left panel
-    time.sleep(3.0)
+    send_commission()
+    click_home()
 
+    log("Removing trash")
     screen = adb.screenshot()
     if not BTN_MENU_BATTLE.on_screen(screen):  # check if we in main menu
         cv2.imwrite(f"warn_screens/menu_{time.time()}.png", screen)
@@ -167,6 +175,33 @@ def after_level():
 
     log("Done!")
     click_home()  # go to main menu
+
+
+def send_commission():
+    if BTN_COMMISSION_COMPLETED.click(screenshot()):
+        log("Completing commission")
+        while BTN_COMMISSION_S.click(screenshot()):
+            BTN_ITEM.click(screenshot())
+
+    if BTN_COMMISSION_GO.click(screenshot()):
+        if BTN_COMMISSION_0.on_screen(screenshot()):
+            log("0 fleets")
+            return
+    else:
+        return
+    log("Starting commissions")
+    click(11, 114, 28, 25, 3.0)
+    try_count = 0
+    while try_count < 4 and BTN_COMMISSION_NEW.click(screenshot()):
+        try_count += 1
+        BTN_COMMISSION_RECOMMEND.click(screenshot())
+        BTN_COMMISSION_READY.click(screenshot())
+        BTN_COMMISSION_CONFIRM.click(screenshot())
+        click(63, 327, 18, 25, 1.0)
+        if BTN_COMMISSION_0.on_screen(screenshot()):
+            log("0 fleets")
+            break
+    log("Commissions done")
 
 
 def click_ship(ship: Clickable) -> bool:
@@ -240,6 +275,8 @@ def restart_game():
 
 
 def run():
+    after_level()  # free space & collect oil first
+
     clear_count, battle_count, battle_clicks, = 0, 0, 0
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
