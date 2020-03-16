@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 
 def find_zones(screen: np.ndarray, template: np.ndarray, threshold: float) -> List[Tuple[int, int, int, int]]:
@@ -27,6 +27,15 @@ def find_zones(screen: np.ndarray, template: np.ndarray, threshold: float) -> Li
         result.append((x, y, w, h))
 
     return result
+
+
+def find_best(screen: np.ndarray, template: np.ndarray, threshold: float = 0.95) -> Union[None, Tuple[int, int]]:
+    res = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+    if max_val > threshold:
+        return max_loc
+    else:
+        return None
 
 
 def find_zones_color(

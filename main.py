@@ -3,6 +3,7 @@ import random
 import adb
 from btn import Clickable
 from log import log
+from typing import List, Tuple
 import argparse
 import cv2
 import img
@@ -11,7 +12,6 @@ MODE_EVENT = False
 MODE_SWAP = 5
 MODE_BOSS = 2
 
-BTN_BOSS = Clickable("boss", delay=7.0)
 BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
@@ -54,6 +54,10 @@ BTN_COMMISSION_NEW = Clickable("commission_new", delay=2.0)
 BTN_COMMISSION_RECOMMEND = Clickable("commission_recommend", delay=2.0)
 BTN_COMMISSION_READY = Clickable("commission_ready", delay=2.0)
 BTN_COMMISSION_CONFIRM = Clickable("commission_confirm", x=361, y=257, delay=6.0)
+BTN_COMMISSION_COST = Clickable("commission_cost", x=558, y=147)
+
+IMG_ARROW = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)
+IMG_BOSS = cv2.imread(f"images/boss.png", cv2.IMREAD_GRAYSCALE)
 
 useless_buttons = [
     BTN_ITEM,
@@ -85,6 +89,11 @@ swipes = [
     lambda: adb.swipe(1720, 200, 200, 880),
     lambda: adb.swipe(1720, 880, 200, 200),
     lambda: adb.swipe(200, 880, 1720, 200),
+]
+
+find_funs = [
+    lambda s: img.find_zones_color(s, (148, 235, 255), (2, 2)),  # 1-2 triangles
+    lambda s: img.find_zones_color(s, (132, 134, 255), (2, 2)),  # 3 triangles
 ]
 
 
@@ -128,6 +137,7 @@ def after_level():
     time.sleep(3.0)
 
     send_commission()
+    log("Commissions done")
     click_home()
 
     log("Removing trash")
@@ -189,7 +199,20 @@ def send_commission():
             return
     else:
         return
-    log("Starting commissions")
+
+    log("Starting commissions 1")
+    try_count = 0
+    while try_count < 4 and BTN_COMMISSION_NEW.click(screenshot()):
+        try_count += 1
+        if BTN_COMMISSION_COST.on_screen(screenshot()):
+            BTN_COMMISSION_RECOMMEND.click(screenshot())
+            BTN_COMMISSION_READY.click(screenshot())
+            BTN_COMMISSION_CONFIRM.click(screenshot())
+        click(63, 327, 18, 25, 1.0)
+        if BTN_COMMISSION_0.on_screen(screenshot()):
+            log("0 fleets")
+            return
+    log("Starting commissions 2")
     click(11, 114, 28, 25, 3.0)
     try_count = 0
     while try_count < 4 and BTN_COMMISSION_NEW.click(screenshot()):
@@ -200,41 +223,74 @@ def send_commission():
         click(63, 327, 18, 25, 1.0)
         if BTN_COMMISSION_0.on_screen(screenshot()):
             log("0 fleets")
-            break
-    log("Commissions done")
+            return
 
 
-def click_ship(ship: Clickable) -> bool:
-    log(f"Searching {ship.image_names[0]}")
-    for i, sw in enumerate(swipes):
+def sort_near(ships: List[Tuple[int, int]], point: Tuple[int, int]):
+    px, py = point
+
+    def get_dist(pos: Tuple[int, int]) -> float:
+        x, y = pos
+        dx, dy = x - px, y - py
+        return dx * dx + dy * dy
+
+    ships.sort(key=get_dist)
+
+
+def click_boss() -> str:
+    log(f"Searching boss")
+    for sw in swipes:
         sw()  # swipe in some direction
         time.sleep(1.0)
         click_question()
         screen = screenshot()
-        if ship.click(screen):  # click ship
-            screen = screenshot()
-            if not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
-                return True
-        elif not BTN_SWITCH.on_screen(screen):  # success if switch disappeared
-            return True
-    return False
+        boss_point = img.find_best(screen, IMG_BOSS, 0.85)
+
+        if boss_point is not None:  # boss on screen
+            x, y = boss_point
+            for _ in range(2):  # 2 click try's
+                log(f"Tap boss [{x}, {y}]. Waiting 7.0s")
+                click(x, y, 18, 18, 7.0)
+                if not BTN_SWITCH.on_screen(screenshot()):  # success if switch disappeared
+                    return "boss"
+
+            # failed
+            log(f"Searching ships near boss ")
+            ships = []
+            screen = adb.screenshot(False)
+            for fun in find_funs:
+                ships.extend(fun(screen))
+            sort_near(ships, (x * 3, y * 3))  # ships near boss
+
+            for sx, sy in ships:
+                for _ in range(2):  # 2 click try's
+                    log(f"Tap ship [{sx}, {sy}]. Waiting 7.0s")
+                    adb.tap(sx + random.randint(0, 50), sy + random.randint(0, 50))
+                    time.sleep(7.0)
+                    if not BTN_SWITCH.on_screen(screenshot()):  # success if switch disappeared
+                        return "ship"
+
+    return "none"
 
 
 def click_enemy() -> bool:
-    find_funs = [
-        lambda s: img.find_zones_color(s, (148, 235, 255), (2, 2)),  # 1-2 triangles
-        lambda s: img.find_zones_color(s, (132, 134, 255), (2, 2)),  # 3 triangles
-    ]
+    log("Searching ships")
     for fun in find_funs:
         for sw in swipes:
             sw()  # swipe in some direction
             time.sleep(1.0)
             click_question()
-            screenshot()  # click buttons
+            screen = screenshot()  # click buttons
             ships = fun(adb.screenshot(False))  # find triangles
+
+            player_point = img.find_best(screen, IMG_ARROW, 0.95)  # if we find player go near player
+            if player_point is not None:
+                px, py = player_point
+                sort_near(ships, (px * 3, (py + 70) * 3))  # player 70 pixels bellow arrow
+
             for x, y in ships:
                 for _ in range(2):  # 2 click try's
-                    log(f"Tap ship [{x}, {y}], waiting 7.0s")
+                    log(f"Tap ship [{x}, {y}]. Waiting 7.0s")
                     adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
                     time.sleep(7.0)
                     if not BTN_SWITCH.on_screen(screenshot()):  # success if switch disappeared
@@ -306,16 +362,20 @@ def run():
 
         # on map
         if BTN_SWITCH.on_screen(screen):
-            is_nothing = False
-            if battle_count < MODE_BOSS or not click_ship(BTN_BOSS):  # try click boss
-                clicked_boss = False
-                log("Searching ships")
+            is_nothing, clicked_boss = False, False
+            state = "none"
+
+            if battle_count >= MODE_BOSS:
+                state = click_boss()
+                if state == "boss":
+                    clicked_boss = True
+
+            if state == "none":
                 if not click_enemy():  # try click ships
                     log("Ships not found")
                     BTN_RETREAT.click(screenshot())
                     battle_count, battle_clicks = 0, 0
-            else:
-                clicked_boss = True
+
         elif BTN_CONFIRM.click(screen):  # after fight
             battle_clicks = 0
             is_nothing = False
