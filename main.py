@@ -12,7 +12,7 @@ MODE_EVENT = False
 MODE_SWAP = 5
 MODE_BOSS = 2
 
-BTN_QUESTION = Clickable("question", offset_y=30, delay=5.0)
+BTN_QUESTION = Clickable([f"question{i}" for i in range(2)], offset_y=30, delay=5.0)
 BTN_SWITCH = Clickable("switch")
 BTN_MOOD = Clickable("mood")
 
@@ -244,7 +244,7 @@ def click_boss() -> str:
         time.sleep(1.0)
         click_question()
         screen = screenshot()
-        boss_point = img.find_best(screen, IMG_BOSS, 0.85)
+        boss_point = img.find_best(screen, IMG_BOSS, 0.94)
 
         if boss_point is not None:  # boss on screen
             x, y = boss_point
