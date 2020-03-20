@@ -33,6 +33,7 @@ BTN_BATTLE = Clickable("battle", x=529, y=306, delay=40.0)
 BTN_CONFIRM = Clickable("confirm", x=511, y=321, delay=6.0)
 BTN_LOCK_CONFIRM = Clickable("lock_confirm", x=360, y=252)
 BTN_LOSE_CONFIRM = Clickable("lose_confirm", x=286, y=258)
+BTN_LOSE_CLOSE = Clickable("lose_close", x=298, y=305)
 BTN_COMMISSION = Clickable("commission", x=284, y=252)
 BTN_RECONNECT = Clickable("reconnect", x=360, y=252)
 BTN_DOWNLOAD = Clickable("download", x=364, y=242)
@@ -46,8 +47,8 @@ BTN_ENHANCE_CONFIRM = Clickable("enhance_confirm", x=447, y=262)
 BTN_ENHANCE_BREAK = Clickable("enhance_break", x=367, y=277)
 BTN_ENHANCE = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
 
-BTN_COMMISSION_COMPLETED = Clickable("commission_completed", x=192, y=136, delay=6.0)
-BTN_COMMISSION_S = Clickable("commission_s", delay=6.0)
+BTN_COMMISSION_COMPLETED = Clickable("commission_completed", x=192, y=136, delay=3.0)
+BTN_COMMISSION_S = Clickable("commission_s", delay=3.0)
 BTN_COMMISSION_GO = Clickable("commission_go", x=213, y=134, delay=2.0)
 BTN_COMMISSION_0 = Clickable("commission_0", x=541, y=10)
 BTN_COMMISSION_NEW = Clickable("commission_new", delay=2.0)
@@ -55,6 +56,7 @@ BTN_COMMISSION_RECOMMEND = Clickable("commission_recommend", delay=2.0)
 BTN_COMMISSION_READY = Clickable("commission_ready", delay=2.0)
 BTN_COMMISSION_CONFIRM = Clickable("commission_confirm", x=361, y=257, delay=6.0)
 BTN_COMMISSION_COST = Clickable("commission_cost", x=558, y=147)
+BTN_COMMISSION_OIL = Clickable("commission_oil")
 
 IMG_ARROW = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)
 IMG_BOSS = cv2.imread(f"images/boss.png", cv2.IMREAD_GRAYSCALE)
@@ -70,6 +72,7 @@ useless_buttons = [
     BTN_GO2,
     BTN_LOCK_CONFIRM,
     BTN_LOSE_CONFIRM,
+    BTN_LOSE_CLOSE,
     BTN_EVADE,
     BTN_GOT_IT,
 ]
@@ -187,6 +190,22 @@ def after_level():
     click_home()  # go to main menu
 
 
+def send_one_commission(zero_cost: bool):
+    try_count = 0
+    while try_count < 7 and BTN_COMMISSION_NEW.click(screenshot()):
+        if zero_cost and not BTN_COMMISSION_COST.on_screen(screenshot()):
+            pass
+        elif try_count >= 5 or BTN_COMMISSION_OIL.on_screen(screenshot()):
+            BTN_COMMISSION_RECOMMEND.click(screenshot())
+            BTN_COMMISSION_READY.click(screenshot())
+            BTN_COMMISSION_CONFIRM.click(screenshot())
+        click(63, 327, 18, 25, 1.0)
+        if BTN_COMMISSION_0.on_screen(screenshot()):
+            log("0 fleets")
+            return
+        try_count += 1
+
+
 def send_commission():
     if BTN_COMMISSION_COMPLETED.click(screenshot()):
         log("Completing commission")
@@ -200,30 +219,13 @@ def send_commission():
     else:
         return
 
-    log("Starting commissions 1")
-    try_count = 0
-    while try_count < 4 and BTN_COMMISSION_NEW.click(screenshot()):
-        try_count += 1
-        if BTN_COMMISSION_COST.on_screen(screenshot()):
-            BTN_COMMISSION_RECOMMEND.click(screenshot())
-            BTN_COMMISSION_READY.click(screenshot())
-            BTN_COMMISSION_CONFIRM.click(screenshot())
-        click(63, 327, 18, 25, 1.0)
-        if BTN_COMMISSION_0.on_screen(screenshot()):
-            log("0 fleets")
-            return
-    log("Starting commissions 2")
+    log("Starting urgent commissions")
     click(11, 114, 28, 25, 3.0)
-    try_count = 0
-    while try_count < 4 and BTN_COMMISSION_NEW.click(screenshot()):
-        try_count += 1
-        BTN_COMMISSION_RECOMMEND.click(screenshot())
-        BTN_COMMISSION_READY.click(screenshot())
-        BTN_COMMISSION_CONFIRM.click(screenshot())
-        click(63, 327, 18, 25, 1.0)
-        if BTN_COMMISSION_0.on_screen(screenshot()):
-            log("0 fleets")
-            return
+    send_one_commission(False)
+
+    log("Starting daily commissions")
+    click(12, 63, 30, 30, 3.0)
+    send_one_commission(True)
 
 
 def sort_near(ships: List[Tuple[int, int]], point: Tuple[int, int]):
@@ -383,7 +385,7 @@ def run():
             screen = screenshot()
             if BTN_SWITCH.on_screen(screen):  # fight finished
                 battle_count += 1
-                if battle_count > 0 and battle_count % MODE_SWAP == 0:
+                if battle_count % MODE_SWAP == 0:
                     BTN_SWITCH.click(screen)
             elif clicked_boss:  # level finished
                 log("Boss killed")
