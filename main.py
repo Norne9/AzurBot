@@ -190,12 +190,12 @@ def after_level():
     click_home()  # go to main menu
 
 
-def send_one_commission(zero_cost: bool):
+def send_one_commission(zero_cost: bool, oil_only: bool, total_try: int):
     try_count = 0
-    while try_count < 7 and BTN_COMMISSION_NEW.click(screenshot()):
+    while try_count < total_try and BTN_COMMISSION_NEW.click(screenshot()):
         if zero_cost and not BTN_COMMISSION_COST.on_screen(screenshot()):
             pass
-        elif try_count >= 5 or BTN_COMMISSION_OIL.on_screen(screenshot()):
+        elif not oil_only or BTN_COMMISSION_OIL.on_screen(screenshot()):
             BTN_COMMISSION_RECOMMEND.click(screenshot())
             BTN_COMMISSION_READY.click(screenshot())
             BTN_COMMISSION_CONFIRM.click(screenshot())
@@ -219,13 +219,21 @@ def send_commission():
     else:
         return
 
+    log("Starting urgent commissions oil")
+    click(11, 114, 28, 25, 3.0)
+    send_one_commission(False, True, 5)
+
+    log("Starting daily commissions oil")
+    click(12, 63, 30, 30, 3.0)
+    send_one_commission(True, True, 5)
+
     log("Starting urgent commissions")
     click(11, 114, 28, 25, 3.0)
-    send_one_commission(False)
+    send_one_commission(False, False, 5)
 
     log("Starting daily commissions")
     click(12, 63, 30, 30, 3.0)
-    send_one_commission(True)
+    send_one_commission(True, False, 5)
 
 
 def sort_near(ships: List[Tuple[int, int]], point: Tuple[int, int]):
