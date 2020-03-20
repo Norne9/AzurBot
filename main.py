@@ -179,6 +179,7 @@ def after_level():
             else:
                 no_enhance += 1
         else:
+            no_enhance += 1
             log("No enhance button!")
 
         adb.swipe(
