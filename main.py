@@ -176,6 +176,9 @@ def after_level():
                 if BTN_ENHANCE_BREAK.click(screenshot()):  # press disassemble
                     adb.tap(random.randint(1395, 1623), random.randint(807, 942))  # tap to continue
                     time.sleep(2.0)
+                else:  # something went wrong
+                    log("No break button!")
+                    adb.back()
             else:
                 no_enhance += 1
         else:
