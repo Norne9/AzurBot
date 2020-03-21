@@ -3,6 +3,17 @@ import numpy as np
 from typing import List, Tuple, Union
 
 
+def which(screen: np.ndarray, templates: List[np.ndarray]) -> int:
+    best_val, best_i = -1, -1
+    for i, tem in enumerate(templates):
+        res = cv2.matchTemplate(screen, tem, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        if max_val > best_val:
+            best_val = max_val
+            best_i = i
+    return best_i
+
+
 def find_zones(screen: np.ndarray, template: np.ndarray, threshold: float) -> List[Tuple[int, int, int, int]]:
     w, h = template.shape[::-1]
     res = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)

@@ -14,6 +14,19 @@ def shell(cmd: List[str]) -> str:
         return out.replace(b"\r\n", b"\n").decode().strip()
 
 
+def screenshot_hd_gray():
+    with subprocess.Popen(
+        ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ) as proc:
+        data, err = proc.communicate()
+        if len(err) > 0:
+            raise Exception(f"ADB {err.decode()}")
+    resized = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)
+    if resized.shape[0] > resized.shape[1]:
+        resized = cv2.rotate(resized, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    return resized
+
+
 def screenshot(low_quality: bool = True):
     with subprocess.Popen(
         ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE

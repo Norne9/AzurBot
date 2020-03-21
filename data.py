@@ -44,15 +44,18 @@ class Btn:
     commission_0 = Clickable("commission_0", x=541, y=10)
     commission_new = Clickable("commission_new", delay=2.0)
     commission_recommend = Clickable("commission_recommend", delay=2.0)
-    commission_ready = Clickable("commission_ready", delay=2.0)
+    commission_ready = Clickable("commission_ready", delay=3.0)
     commission_confirm = Clickable("commission_confirm", x=361, y=257, delay=6.0)
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
+    commission_cancel = Clickable("commission_cancel", x=529, y=170)
 
     menu_can = Clickable("menu_can", x=79, y=30, delay=1.0)
-    menu_money = Clickable("menu_money", x=201, y=22, delay=1.0)
+    menu_money = Clickable("menu_money", x=201, y=22, delay=6.0)
 
 
 class Img:
     arrow = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)
     boss = cv2.imread(f"images/boss.png", cv2.IMREAD_GRAYSCALE)
+    digits = [cv2.imread(f"images/digits/{i}.png", cv2.IMREAD_GRAYSCALE) for i in range(10)]
+    commission = cv2.imread(f"images/commission_new.png", cv2.IMREAD_GRAYSCALE)
