@@ -50,7 +50,7 @@ def find_best(screen: np.ndarray, template: np.ndarray, threshold: float = 0.95)
 
 
 def is_deadzone(x: int, y: int):
-    return (x > 1750) or (x > 1000 and y > 880) or (x < 1100 and y < 245) or (x < 186)
+    return (x > 1750) or (x > 930 and y > 880) or (x < 900 and y < 245) or (x < 186) or (y < 157)
 
 
 def find_zones_color(
