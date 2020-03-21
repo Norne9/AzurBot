@@ -133,7 +133,7 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
             best_time = time_num
             best_x, best_y = x, y
 
-    if max_time == best_time:
+    if best_time >= max_time:
         return False
 
     # start commission
