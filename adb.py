@@ -47,6 +47,7 @@ def screenshot(low_quality: bool = True):
 
 
 def tap(x: int, y: int):
+    x, y = min(1919, max(0, x)), min(1079, max(0, y))
     shell(["input", "tap", str(int(x)), str(int(y))])
 
 

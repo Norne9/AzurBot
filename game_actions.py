@@ -8,8 +8,8 @@ from typing import List, Tuple
 from log import log
 
 find_funs = [
-    lambda s: img.find_zones_color(s, (148, 235, 255), (2, 2)),  # 1-2 triangles
-    lambda s: img.find_zones_color(s, (132, 134, 255), (2, 2)),  # 3 triangles
+    lambda s: img.find_zones_color(s, (156, 239, 255), (2, 2)),  # 1-2 triangles
+    lambda s: img.find_zones_color(s, (140, 138, 255), (6, 6)),  # 3 triangles
 ]
 swipes = [
     lambda: None,
@@ -42,6 +42,9 @@ def click_boss() -> str:
 
         if boss_point is not None:  # boss on screen
             x, y = boss_point
+            if img.is_deadzone(x * 3, y * 3):
+                continue
+
             for _ in range(2):  # 2 click try's
                 log(f"Tap boss [{x}, {y}]. Waiting 7.0s")
                 utils.click(x, y, 18, 18, 7.0)

@@ -21,7 +21,7 @@ def find_zones(screen: np.ndarray, template: np.ndarray, threshold: float) -> Li
 
     locks = zip(*loc[::-1])
     result = []
-    for pt in locks:  # Switch collumns and rows
+    for pt in locks:  # Switch columns and rows
         x, y = pt[0], pt[1]
 
         # check if its already exists
@@ -49,21 +49,24 @@ def find_best(screen: np.ndarray, template: np.ndarray, threshold: float = 0.95)
         return None
 
 
+def is_deadzone(x: int, y: int):
+    return (x > 1750) or (x > 1000 and y > 880) or (x < 1100 and y < 245) or (x < 186)
+
+
 def find_zones_color(
     screen: np.ndarray, color_bgr: Tuple[int, int, int], size: Tuple[int, int]
 ) -> List[Tuple[int, int]]:
     template = np.zeros((*size, 3), dtype=np.uint8)
     template[:, :] = color_bgr
 
-    res = cv2.matchTemplate(screen, template, cv2.TM_SQDIFF)
-
-    loc = np.where(res < 1.0)
+    res = cv2.matchTemplate(screen, template, cv2.TM_SQDIFF_NORMED)
+    loc = np.where(res < 0.01)
     locks = zip(*loc[::-1])
 
     result = []
-    for pt in locks:  # Switch collumns and rows
-        x, y = pt[0] + 40, pt[1] + 30
-        if (x > 1750) or (x > 1000 and y > 880) or (x < 1100 and y < 245):  # ignore stars & buttons
+    for pt in locks:  # Switch columns and rows
+        x, y = pt[0] + 40, pt[1] + 35
+        if is_deadzone(x, y):  # ignore stars & buttons
             continue
         # check if its already exists
         for rx, ry in result:
@@ -71,10 +74,8 @@ def find_zones_color(
             if diff < 100:
                 break
         else:  # add
-            # cv2.rectangle(screen, (x, y), (x + 100, y + 100), (0, 0, 255), 2)
             result.append((x, y))
 
-    # cv2.imwrite(f"test.png", screen)
     return result
 
 
