@@ -8,7 +8,7 @@ from typing import List, Tuple
 from log import log
 
 find_funs = [
-    lambda s: img.find_zones_color(s, (156, 239, 255), (2, 2)),  # 1-2 triangles
+    lambda s: img.find_zones_color(s, (156, 239, 255), (6, 6)),  # 1-2 triangles
     lambda s: img.find_zones_color(s, (140, 138, 255), (6, 6)),  # 3 triangles
 ]
 swipes = [
