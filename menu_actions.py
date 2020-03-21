@@ -102,6 +102,19 @@ def parse_time(time_pic: np.ndarray) -> int:
     return time_num
 
 
+def send_girl():
+    utils.click(121, 159, 27, 24, 3.0)  # click first plus
+    for x in range(7):
+        for y in range(3):
+            utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 3.0)
+            Btn.commission_select_cancel.click(utils.screenshot())
+            if Btn.commission_select_1.on_screen(utils.screenshot()):
+                utils.click(511, 328, 58, 13, 3.0)
+                return
+    adb.back()
+    time.sleep(2.0)
+
+
 def send_best_commission(oil: bool, max_time: int) -> bool:
     if Btn.commission_0.on_screen(utils.screenshot()):  # check if we have fleets
         log("0 fleets")
@@ -138,6 +151,7 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
 
     # start commission
     utils.click(best_x, best_y, 45, 13, 3.0)
+    send_girl()
     Btn.commission_recommend.click(utils.screenshot())
     Btn.commission_ready.click(utils.screenshot())
     Btn.commission_confirm.click(utils.screenshot())

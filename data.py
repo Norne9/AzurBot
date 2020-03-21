@@ -49,6 +49,8 @@ class Btn:
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
     commission_cancel = Clickable("commission_cancel", x=529, y=170)
+    commission_select_cancel = Clickable("commission_select_cancel", x=216, y=256)
+    commission_select_1 = Clickable("commission_select_1", x=320, y=333)
 
     menu_can = Clickable("menu_can", x=79, y=30, delay=1.0)
     menu_money = Clickable("menu_money", x=201, y=22, delay=6.0)
