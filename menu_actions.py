@@ -102,8 +102,9 @@ def parse_time(time_pic: np.ndarray) -> int:
 
 
 def send_girl():
-    utils.click(121, 159, 27, 24, 2.0)  # click first plus
-    utils.scroll_down()
+    utils.click(121, 159, 27, 24, 3.0)  # click first plus
+    for _ in range(2):  # swipe to bottom
+        utils.scroll_down()
     for x in range(7):
         for y in range(3):
             utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 2.0)
