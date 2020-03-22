@@ -72,4 +72,4 @@ def show(screen):
 
 
 def scroll_down():
-    adb.swipe(1100, 1030, 1100, 130)
+    adb.swipe(1100, 970, 1100, 130)
