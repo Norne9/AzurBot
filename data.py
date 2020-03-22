@@ -15,7 +15,7 @@ class Btn:
     menu_battle = Clickable("menu_battle", x=507, y=150)
     cmode = Clickable("cmode", x=518, y=294)
     go1 = Clickable("go1", x=459, y=247, delay=1.0)
-    go2 = Clickable("go2", x=525, y=291, delay=1.0)
+    go2 = Clickable("go2", x=525, y=291, delay=6.0)
     evade = Clickable("evade", x=505, y=224)
     got_it = Clickable("got_it", delay=1.0)
     auto = Clickable("auto", x=376, y=56, delay=1.0)
