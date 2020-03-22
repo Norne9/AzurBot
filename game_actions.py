@@ -48,7 +48,9 @@ def click_boss() -> str:
             for _ in range(2):  # 2 click try's
                 log(f"Tap boss [{x}, {y}]")
                 utils.click(x, y, 18, 18, 0)
-                if wait_for_battle(10.0):  # success if switch disappeared
+                if detect_info():  # don't try second click
+                    break
+                if wait_for_battle(8.0):  # success if switch disappeared
                     return "boss"
 
             # failed
@@ -63,7 +65,9 @@ def click_boss() -> str:
                 for _ in range(2):  # 2 click try's
                     log(f"Tap ship [{sx}, {sy}]")
                     adb.tap(sx + random.randint(0, 50), sy + random.randint(0, 50))
-                    if wait_for_battle(10.0):  # success if switch disappeared
+                    if detect_info():  # don't try second click
+                        break
+                    if wait_for_battle(8.0):  # success if switch disappeared
                         return "ship"
 
     return "none"
@@ -88,7 +92,9 @@ def click_enemy() -> bool:
                 for _ in range(2):  # 2 click try's
                     log(f"Tap ship [{x}, {y}]")
                     adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
-                    if wait_for_battle(10.0):  # success if switch disappeared
+                    if detect_info():  # don't try second click
+                        break
+                    if wait_for_battle(8.0):  # success if switch disappeared
                         return True
     return False
 
@@ -105,18 +111,16 @@ def click_question():
 def detect_info() -> bool:
     time.sleep(1.0)
     zone = utils.screenshot()[143 : 143 + 40, 192 : 192 + 60]
-    if Btn.unable_info.on_screen(zone):
-        return True
-    return False
+    has_unable = False
+    while Btn.unable_info.on_screen(zone):
+        time.sleep(0.5)
+        has_unable = True
+    return has_unable
 
 
 def wait_for_battle(seconds: float) -> bool:
     log(f"Waiting max {seconds}s")
     end_time = time.time() + seconds
-
-    if detect_info():
-        return False
-
     while end_time > time.time():
         time.sleep(0.5)
         if not Btn.switch.on_screen(utils.screenshot()):
