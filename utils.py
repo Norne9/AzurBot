@@ -69,3 +69,7 @@ def show(screen):
     cv2.imshow("screen", screen)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+def scroll_down():
+    adb.swipe(1100, 1030, 1100, 130)

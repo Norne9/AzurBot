@@ -102,13 +102,14 @@ def parse_time(time_pic: np.ndarray) -> int:
 
 
 def send_girl():
-    utils.click(121, 159, 27, 24, 3.0)  # click first plus
+    utils.click(121, 159, 27, 24, 2.0)  # click first plus
+    utils.scroll_down()
     for x in range(7):
         for y in range(3):
-            utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 3.0)
+            utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 2.0)
             Btn.commission_select_cancel.click(adb.screenshot())
             if Btn.commission_select_1.on_screen(adb.screenshot()):
-                utils.click(511, 328, 58, 13, 3.0)
+                utils.click(511, 328, 58, 13, 2.0)
                 return
     adb.back()
     time.sleep(2.0)
@@ -120,7 +121,7 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
         return False
 
     for _ in range(2):  # swipe to bottom
-        adb.swipe(1100, 1030, 1100, 130)
+        utils.scroll_down()
     time.sleep(2.0)
 
     screen = utils.screenshot()  # make screenshots
