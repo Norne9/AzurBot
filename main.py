@@ -58,8 +58,6 @@ def run():
                 adb.back()
                 after_level()
             continue
-        else:
-            go_clicks = 0
 
         # level selection
         if Btn.level_name.on_screen(screen):
@@ -73,6 +71,7 @@ def run():
 
         # on map
         if Btn.switch.on_screen(screen):
+            go_clicks = 0
             is_nothing, clicked_boss = False, False
             state = "none"
 
