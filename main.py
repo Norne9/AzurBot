@@ -38,7 +38,6 @@ def run():
     is_nothing, clicked_boss = False, False
     while True:
         screen = utils.screenshot()
-        time.sleep(1.0)
 
         if Btn.battle.on_screen(screen):
             is_nothing = False

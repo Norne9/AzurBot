@@ -16,7 +16,7 @@ class Clickable:
         y: int = -1,
         offset_x: int = 0,
         offset_y: int = 0,
-        delay: float = 3.0,
+        delay: float = 2.0,
     ):
         if type(image_names) == str:  # if single string -> convert to array
             image_names = [image_names]

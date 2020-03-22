@@ -7,8 +7,8 @@ class Btn:
     switch = Clickable("switch")
     mood = Clickable("mood")
 
-    level_name = Clickable("level_name", delay=2.0)
-    event_name = Clickable("event_name", delay=2.0)
+    level_name = Clickable("level_name")
+    event_name = Clickable("event_name")
 
     close = Clickable("close", x=590, y=26)
     item = Clickable("item", x=273, y=107)
@@ -38,21 +38,21 @@ class Btn:
     enhance_break = Clickable("enhance_break", x=367, y=277)
     enhance = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
 
-    commission_completed = Clickable("commission_completed", x=192, y=136, delay=3.0)
-    commission_s = Clickable("commission_s", delay=3.0)
-    commission_go = Clickable("commission_go", x=213, y=134, delay=2.0)
+    commission_completed = Clickable("commission_completed", x=192, y=136)
+    commission_s = Clickable("commission_s")
+    commission_go = Clickable("commission_go", x=213, y=134)
     commission_0 = Clickable("commission_0", x=541, y=10)
-    commission_new = Clickable("commission_new", delay=2.0)
-    commission_recommend = Clickable("commission_recommend", delay=2.0)
-    commission_ready = Clickable("commission_ready", delay=3.0)
-    commission_confirm = Clickable("commission_confirm", x=361, y=257, delay=6.0)
+    commission_new = Clickable("commission_new")
+    commission_recommend = Clickable("commission_recommend")
+    commission_ready = Clickable("commission_ready")
+    commission_confirm = Clickable("commission_confirm", x=361, y=257)
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
     commission_cancel = Clickable("commission_cancel", x=529, y=170)
     commission_select_cancel = Clickable("commission_select_cancel", x=216, y=256)
     commission_select_1 = Clickable("commission_select_1", x=320, y=333)
 
-    menu_can = Clickable("menu_can", delay=2.0)
+    menu_can = Clickable("menu_can", delay=1.0)
     menu_money = Clickable("menu_money", delay=6.0)
 
 

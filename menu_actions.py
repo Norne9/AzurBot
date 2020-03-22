@@ -156,7 +156,7 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
     Btn.commission_ready.click(utils.screenshot())
     Btn.commission_confirm.click(utils.screenshot())
     # check if commission started
-    time.sleep(3.0)
+    time.sleep(6.0)
     has_cancel = Btn.commission_cancel.on_screen(utils.screenshot())
     # close commission window
     utils.click(63, 327, 18, 25, 1.0)
