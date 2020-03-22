@@ -47,7 +47,7 @@ def click_boss() -> str:
 
             for _ in range(2):  # 2 click try's
                 log(f"Tap boss [{x}, {y}]")
-                utils.click(x, y, 18, 18, 0.01)
+                utils.click(x, y, 18, 18, 0)
                 if wait_for_battle(10.0):  # success if switch disappeared
                     return "boss"
 
@@ -97,11 +97,26 @@ def click_question():
     for _ in range(3):
         if not Btn.question.click(utils.screenshot()):
             break
+        if detect_info():
+            continue
+        time.sleep(7.0)
+
+
+def detect_info() -> bool:
+    time.sleep(1.0)
+    zone = utils.screenshot()[143 : 143 + 40, 192 : 192 + 60]
+    if Btn.unable_info.on_screen(zone):
+        return True
+    return False
 
 
 def wait_for_battle(seconds: float) -> bool:
     log(f"Waiting max {seconds}s")
     end_time = time.time() + seconds
+
+    if detect_info():
+        return False
+
     while end_time > time.time():
         time.sleep(0.5)
         if not Btn.switch.on_screen(utils.screenshot()):

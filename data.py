@@ -3,12 +3,13 @@ import cv2
 
 
 class Btn:
-    question = Clickable([f"question{i}" for i in range(2)], offset_y=30, delay=5.0)
-    switch = Clickable("switch")
+    question = Clickable([f"question{i}" for i in range(2)], offset_y=30, delay=0)
+    switch = Clickable("switch", delay=5.0)
     mood = Clickable("mood")
 
     level_name = Clickable("level_name")
     event_name = Clickable("event_name")
+    unable_info = Clickable("unable_info")
 
     close = Clickable("close", x=590, y=26)
     item = Clickable("item", x=273, y=107)
