@@ -11,7 +11,7 @@ useless_buttons = [
     Btn.download,
     Btn.close,
     Btn.menu_battle,
-    Btn.go1,
+    # Btn.go1,
     Btn.go2,
     Btn.lock_confirm,
     Btn.lose_confirm,
@@ -59,3 +59,9 @@ def restart_game():
     log("Starting game")
     adb.start_game()
     time.sleep(20.0)
+
+
+def show(screen):
+    cv2.imshow("screen", screen)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

@@ -46,13 +46,13 @@ def click_boss() -> str:
                 continue
 
             for _ in range(2):  # 2 click try's
-                log(f"Tap boss [{x}, {y}]. Waiting 7.0s")
-                utils.click(x, y, 18, 18, 7.0)
-                if not Btn.switch.on_screen(utils.screenshot()):  # success if switch disappeared
+                log(f"Tap boss [{x}, {y}]")
+                utils.click(x, y, 18, 18, 0.01)
+                if wait_for_battle(10.0):  # success if switch disappeared
                     return "boss"
 
             # failed
-            log(f"Searching ships near boss ")
+            log(f"Searching ships near boss")
             ships = []
             screen = adb.screenshot(False)
             for fun in find_funs:
@@ -61,10 +61,9 @@ def click_boss() -> str:
 
             for sx, sy in ships:
                 for _ in range(2):  # 2 click try's
-                    log(f"Tap ship [{sx}, {sy}]. Waiting 7.0s")
+                    log(f"Tap ship [{sx}, {sy}]")
                     adb.tap(sx + random.randint(0, 50), sy + random.randint(0, 50))
-                    time.sleep(7.0)
-                    if not Btn.switch.on_screen(utils.screenshot()):  # success if switch disappeared
+                    if wait_for_battle(10.0):  # success if switch disappeared
                         return "ship"
 
     return "none"
@@ -87,10 +86,9 @@ def click_enemy() -> bool:
 
             for x, y in ships:
                 for _ in range(2):  # 2 click try's
-                    log(f"Tap ship [{x}, {y}]. Waiting 7.0s")
+                    log(f"Tap ship [{x}, {y}]")
                     adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
-                    time.sleep(7.0)
-                    if not Btn.switch.on_screen(utils.screenshot()):  # success if switch disappeared
+                    if wait_for_battle(10.0):  # success if switch disappeared
                         return True
     return False
 
@@ -99,3 +97,13 @@ def click_question():
     for _ in range(3):
         if not Btn.question.click(utils.screenshot()):
             break
+
+
+def wait_for_battle(seconds: float) -> bool:
+    log(f"Waiting max {seconds}s")
+    end_time = time.time() + seconds
+    while end_time > time.time():
+        time.sleep(0.5)
+        if not Btn.switch.on_screen(utils.screenshot()):
+            return True
+    return False

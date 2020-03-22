@@ -10,7 +10,7 @@ from menu_actions import after_level
 
 MODE_EVENT = False
 MODE_SWAP = 5
-MODE_BOSS = 2
+MODE_BOSS = 5
 
 
 def begin_battle():
@@ -33,7 +33,7 @@ def begin_battle():
 def run():
     after_level()  # free space & collect oil first
 
-    clear_count, battle_count, battle_clicks, = 0, 0, 0
+    clear_count, battle_count, battle_clicks, go_clicks = 0, 0, 0, 0
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
     while True:
@@ -49,6 +49,17 @@ def run():
                 continue
             begin_battle()
             continue
+
+        # click go
+        if Btn.go1.click(screen):
+            go_clicks += 1
+            if go_clicks > 2:
+                go_clicks = 0
+                adb.back()
+                after_level()
+            continue
+        else:
+            go_clicks = 0
 
         # level selection
         if Btn.level_name.on_screen(screen):
