@@ -11,7 +11,6 @@ import numpy as np
 def after_level():
     log("Collecting oil")
     utils.click_home()  # go to main menu
-    utils.click_home()
 
     screen = adb.screenshot()
     if not Btn.menu_battle.on_screen(screen):  # check if we in main menu
@@ -45,11 +44,12 @@ def after_level():
     Btn.sort_confirm.click(utils.screenshot())
 
     utils.click(49, 53, 63, 56, 3.0)  # click first ship
+    Btn.enhance.click(utils.screenshot())
 
     no_enhance = 0
     while no_enhance < 4:
         # click enhance
-        if Btn.enhance.click(utils.screenshot()):
+        if Btn.enhance.on_screen(utils.screenshot()):
             utils.click(483, 302, 58, 19, 0.5)  # press fill button
             utils.click(567, 302, 58, 19, 2.0)  # press enhance button
 
@@ -59,11 +59,10 @@ def after_level():
                     utils.click(434, 244, 164, 97, 2.0)  # tap to continue
                 else:  # something went wrong
                     log("No break button!")
-                    adb.back()
             else:
                 no_enhance += 1
         else:
-            no_enhance += 1
+            no_enhance += 10
             log("No enhance button!")
 
         adb.swipe(

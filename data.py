@@ -54,6 +54,7 @@ class Btn:
 
     menu_can = Clickable("menu_can", delay=1.0)
     menu_money = Clickable("menu_money", delay=6.0)
+    menu_quit_cancel = Clickable("menu_quit_cancel", x=216, y=257, delay=1.0)
 
 
 class Img:

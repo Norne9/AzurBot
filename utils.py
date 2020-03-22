@@ -45,7 +45,11 @@ def click(x: int, y: int, w: int, h: int, delay: float):
 
 
 def click_home():
-    click(608, 9, 13, 15, 3.0)
+    while True:
+        adb.back()
+        time.sleep(0.5)
+        if Btn.menu_quit_cancel.click(adb.screenshot()):
+            return
 
 
 def warn(name: str, screen):
