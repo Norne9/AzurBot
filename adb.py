@@ -1,26 +1,90 @@
 import subprocess
 import cv2
 import numpy as np
+import socket
+import random
+import os
 from typing import List
+
+MY_IP: str = "127.0.0.1"
+MY_PORT: int = 10000
 
 
 def shell(cmd: List[str]) -> str:
-    args = ["adb", "shell"]
+    args = ["shell"]
     args.extend(cmd)
-    with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as proc:
-        out, err = proc.communicate()
-        if len(err) > 0:
-            raise Exception(f"ADB {err.decode()}")
-        return out.replace(b"\r\n", b"\n").decode().strip()
+    return adb_basic(args).replace(b"\r\n", b"\n").decode().strip()
 
 
-def screenshot_hd_gray():
-    with subprocess.Popen(
-        ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    ) as proc:
+def adb_basic(cmd: List[str]) -> bytes:
+    args = ["adb"]
+    args.extend(cmd)
+    with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,) as proc:
         data, err = proc.communicate()
         if len(err) > 0:
             raise Exception(f"ADB {err.decode()}")
+        return data
+
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.255", 1))
+        ip = s.getsockname()[0]
+    except:
+        ip = "127.0.0.1"
+    finally:
+        s.close()
+    return ip
+
+
+def prepare() -> str:
+    global MY_IP, MY_PORT
+    MY_IP = get_ip()
+    MY_PORT = random.randint(58000, 59000)
+
+    with open("android-data/ss.sh", mode="w") as f:
+        f.write(f"/data/local/tmp/ascreencap --stdout | /data/local/tmp/nc {get_ip()} {MY_PORT}")
+    adb_basic(["push", "android-data/ss.sh", "/data/local/tmp/"])
+    os.remove("android-data/ss.sh")
+
+    adb_basic(["push", "android-data/ascreencap", "/data/local/tmp/"])
+    adb_basic(["push", "android-data/nc", "/data/local/tmp/"])
+
+    shell(["chmod", "0777", "/data/local/tmp/ss.sh"])
+    shell(["chmod", "0777", "/data/local/tmp/ascreencap"])
+    shell(["chmod", "0777", "/data/local/tmp/nc"])
+
+    return shell(["echo", '"Android connected!"'])
+
+
+def screenshot_data() -> bytes:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((MY_IP, MY_PORT))
+    s.listen(1)
+
+    with subprocess.Popen(
+        ["adb", "exec-out", "/data/local/tmp/ss.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    ) as proc:
+        conn, addr = s.accept()
+
+        chunks = []
+        while True:
+            data = conn.recv(2048)
+            if not data:
+                break
+            chunks.append(data)
+        conn.close()
+        s.close()
+
+        _, err = proc.communicate()
+        if len(err) > 0:
+            raise Exception(f"ADB {err.decode()}")
+    return b"".join(chunks)
+
+
+def screenshot_hd_gray():
+    data = screenshot_data()
     resized = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)
     if resized.shape[0] > resized.shape[1]:
         resized = cv2.rotate(resized, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -28,12 +92,8 @@ def screenshot_hd_gray():
 
 
 def screenshot(low_quality: bool = True):
-    with subprocess.Popen(
-        ["adb", "exec-out", "screencap", "-p"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    ) as proc:
-        data, err = proc.communicate()
-        if len(err) > 0:
-            raise Exception(f"ADB {err.decode()}")
+    data = screenshot_data()
+
     # load
     if low_quality:
         image = cv2.imdecode(np.frombuffer(data, np.int8), cv2.IMREAD_GRAYSCALE)

@@ -130,7 +130,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     MODE_EVENT, MODE_SWAP, MODE_BOSS = args.event, args.swap, args.boss
 
-    log(adb.shell(["echo", '"Android connected!"']))
+    log(adb.prepare())
     if args.s:
         shot()
     else:
