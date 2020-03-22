@@ -110,10 +110,12 @@ def click_question():
 
 def detect_info() -> bool:
     time.sleep(1.0)
-    zone = utils.screenshot()[143 : 143 + 40, 192 : 192 + 60]
     has_unable = False
+
+    zone = utils.screenshot()[143 : 143 + 40, 192 : 192 + 60]
     while Btn.unable_info.on_screen(zone):
         time.sleep(0.5)
+        zone = utils.screenshot()[143 : 143 + 40, 192 : 192 + 60]
         has_unable = True
     return has_unable
 
