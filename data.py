@@ -1,5 +1,6 @@
 from btn import Clickable
 import cv2
+import numpy as np
 
 
 class Btn:
@@ -63,3 +64,9 @@ class Img:
     boss = cv2.imread(f"images/boss.png", cv2.IMREAD_GRAYSCALE)
     digits = [cv2.imread(f"images/digits/{i}.png", cv2.IMREAD_GRAYSCALE) for i in range(10)]
     commission = cv2.imread(f"images/commission_new.png", cv2.IMREAD_GRAYSCALE)
+
+    # for frame recognition
+    ally_color = np.array([[[57, 235, 156]]], dtype=np.uint8)
+    enemy_color = np.full((2, 2, 3), np.array([57, 60, 247]), dtype=np.uint8)
+    bomb_template = cv2.imread(f"images/game/bomb.png", cv2.IMREAD_COLOR)
+    auto_template = cv2.imread(f"images/game/auto.png", cv2.IMREAD_GRAYSCALE)
