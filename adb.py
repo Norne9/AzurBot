@@ -4,7 +4,7 @@ import numpy as np
 import socket
 import random
 import os
-from typing import List
+from typing import List, Union
 
 MY_IP: str = "127.0.0.1"
 MY_PORT: int = 10000
@@ -125,3 +125,22 @@ def stop_game():
 
 def start_game():
     shell(["monkey", "-p", "com.YoStarEN.AzurLane", "1"])
+
+
+class LongInput:
+    process: Union[None, subprocess.Popen]
+
+    def __init__(self):
+        self.process = None
+
+    def tap(self, x, y):
+        new_process = subprocess.Popen(["adb", "shell", "input", "swipe", str(x), str(y), str(x), str(y), "300"])
+        self.stop()
+        self.process = new_process
+
+    def stop(self):
+        if self.process is not None:  # if started
+            if self.process.poll() is None:  # and not ended
+                self.process.terminate()  # send terminate
+                self.process.wait()  # and wait for it
+            self.process = None

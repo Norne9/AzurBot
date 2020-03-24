@@ -140,6 +140,11 @@ if __name__ == "__main__":
     MODE_EVENT, MODE_SWAP, MODE_BOSS = args.event, args.swap, args.boss
 
     log(adb.prepare())
+    import game_fight
+
+    while True:
+        game_fight.fight()
+
     if args.s:
         shot()
     else:

@@ -28,7 +28,7 @@ def process_frame(screen: np.ndarray) -> Frame:
     return Frame(player, enemys, bombs, auto_button, air_button, torp_button, barrage_button)
 
 
-def show_frame(screen: np.ndarray, frame: Frame):
+def show_frame(screen: np.ndarray, frame: Frame, x: float, y: float):
     if frame.player:
         cv2.drawMarker(screen, frame.player, (0, 255, 0), markerType=cv2.MARKER_STAR, markerSize=64)
 
@@ -38,7 +38,7 @@ def show_frame(screen: np.ndarray, frame: Frame):
     for point in frame.bombs:
         cv2.drawMarker(screen, point, (0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=64)
 
-    text = ""
+    text = f"[{y}] "
     if frame.auto_button:
         text += "auto, "
     if frame.air_button:
@@ -49,6 +49,9 @@ def show_frame(screen: np.ndarray, frame: Frame):
         text += "barrage"
 
     cv2.putText(screen, text, (32, screen.shape[0] - 32), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 255))
+
+    cv2.imshow("debug", screen)
+    cv2.waitKey(1)
 
     return screen
 
