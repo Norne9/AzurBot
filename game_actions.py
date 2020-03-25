@@ -2,15 +2,11 @@ import img
 import adb
 import time
 import utils
-import random
+import enemy_finder
 from data import Btn, Img
 from typing import List, Tuple
 from log import log
 
-find_funs = [
-    lambda s: img.find_zones_color(s, (156, 239, 255), (6, 6)),  # 1-2 triangles
-    lambda s: img.find_zones_color(s, (140, 138, 255), (6, 6)),  # 3 triangles
-]
 swipes = [
     lambda: None,
     lambda: adb.swipe(400, 400, 1720, 880),
@@ -57,46 +53,54 @@ def click_boss() -> str:
             log(f"Searching ships near boss")
             ships = []
             screen = adb.screenshot(False)
-            for fun in find_funs:
-                ships.extend(fun(screen))
+            for yellow in [True, False]:
+                ships.extend(enemy_finder.find_triangles(screen, yellow))
             sort_near(ships, (x * 3, y * 3))  # ships near boss
 
-            for sx, sy in ships:
-                for _ in range(2):  # 2 click try's
-                    log(f"Tap ship [{sx}, {sy}]")
-                    adb.tap(sx + random.randint(0, 50), sy + random.randint(0, 50))
-                    if detect_info():  # don't try second click
-                        break
-                    if wait_for_battle(8.0):  # success if switch disappeared
-                        return "ship"
+            if tap_ships(ships):
+                return "ship"
 
     return "none"
 
 
 def click_enemy() -> bool:
     log("Searching ships")
-    for fun in find_funs:
+    for yellow in [True, False]:
         for sw in swipes:
             sw()  # swipe in some direction
             time.sleep(1.0)
             click_question()
             screen = utils.screenshot()  # click buttons
-            ships = fun(adb.screenshot(False))  # find triangles
+            ships = enemy_finder.find_triangles(adb.screenshot(False), yellow)
 
             player_point = img.find_best(screen, Img.arrow, 0.95)  # if we find player go near player
             if player_point is not None:
                 px, py = player_point
                 sort_near(ships, (px * 3, (py + 70) * 3))  # player 70 pixels bellow arrow
 
-            for x, y in ships:
-                for _ in range(2):  # 2 click try's
-                    log(f"Tap ship [{x}, {y}]")
-                    adb.tap(x + random.randint(0, 50), y + random.randint(0, 50))
-                    if detect_info():  # don't try second click
-                        break
-                    if wait_for_battle(8.0):  # success if switch disappeared
-                        return True
+            if tap_ships(ships):
+                return True
     return False
+
+
+def tap_ships(ships: List[Tuple[int, int]]) -> bool:
+    for x, y in ships:
+        for _ in range(2):  # 2 click try's
+            # select random place to tap
+            point = enemy_finder.get_safe_point(x, y)
+            if point is None:
+                break
+
+            # tap
+            x, y = point
+            log(f"Tap ship [{x}, {y}]")
+            adb.tap(x, y)
+
+            # wait
+            if detect_info():  # don't try second click
+                break
+            if wait_for_battle(8.0):  # success if switch disappeared
+                return True
 
 
 def click_question():

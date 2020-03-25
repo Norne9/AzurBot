@@ -70,3 +70,7 @@ class Img:
     enemy_color = np.full((2, 2, 3), np.array([57, 60, 247]), dtype=np.uint8)
     bomb_template = cv2.imread(f"images/game/bomb.png", cv2.IMREAD_COLOR)
     auto_template = cv2.imread(f"images/game/auto.png", cv2.IMREAD_GRAYSCALE)
+
+    # for triangle finding
+    triangle_template = cv2.imread("images/triangle.png", cv2.IMREAD_GRAYSCALE)
+    deadzone_image = cv2.imread("images/deadzone.png", cv2.IMREAD_GRAYSCALE)
