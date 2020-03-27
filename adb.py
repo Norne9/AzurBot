@@ -4,6 +4,7 @@ import numpy as np
 import socket
 import random
 import os
+import time
 from typing import List, Union
 
 MY_IP: str = "127.0.0.1"
@@ -50,10 +51,12 @@ def prepare() -> str:
 
     adb_basic(["push", "android-data/ascreencap", "/data/local/tmp/"])
     adb_basic(["push", "android-data/nc", "/data/local/tmp/"])
+    adb_basic(["push", "android-data/touch.sh", "/data/local/tmp/"])
 
     shell(["chmod", "0777", "/data/local/tmp/ss.sh"])
     shell(["chmod", "0777", "/data/local/tmp/ascreencap"])
     shell(["chmod", "0777", "/data/local/tmp/nc"])
+    shell(["chmod", "0777", "/data/local/tmp/touch.sh"])
 
     return shell(["echo", '"Android connected!"'])
 
@@ -129,14 +132,26 @@ def start_game():
 
 class LongInput:
     process: Union[None, subprocess.Popen]
+    last_time: float
 
     def __init__(self):
-        self.process = None
+        self.process = subprocess.Popen(
+            ["adb", "shell", "/data/local/tmp/touch.sh"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        )
+        self.last_time = 0
 
     def tap(self, x, y):
-        new_process = subprocess.Popen(["adb", "shell", "input", "swipe", str(x), str(y), str(x), str(y), "300"])
-        self.stop()
-        self.process = new_process
+        if time.time() - self.last_time < 0.3:
+            return
+
+        self.process.stdin.write(f"{x} {y}\n")
+        self.process.stdin.flush()
+        while not self.process.stdout.readline().startswith("ok-ok"):
+            pass
+        self.last_time = time.time()
 
     def stop(self):
         if self.process is not None:  # if started
