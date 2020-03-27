@@ -3,38 +3,58 @@ import adb
 import utils
 import time
 import numpy as np
-import cv2
+from log import log
 from data import Btn
 
 
 def fight():
+    start_time, last_enemy_time, sub_used = -1.0, -1.0, False
     l_input = adb.LongInput()
     last_player = None
     while True:
         screen = adb.screenshot(False)
         frame = frame_recognition.process_frame(screen)
 
-        if len(frame.enemys) > 0:  # only if we have enemys
+        # start time counting
+        if frame.auto_button and start_time < 0:
+            start_time = time.time()
+            last_enemy_time = start_time
+
+        # level finished
+        if not frame.auto_button and check_end():
+            l_input.stop()
+            log(f"Level finished in {time.time() - start_time:.2f}s")
+            return
+
+        # auto mode need?
+        target_auto = True
+        if frame.barrage_button:
+            target_auto = False
+
+        # change mode
+        if frame.auto_button != target_auto:
+            utils.click(3, 15, 73, 15, 0)
+            continue
+
+        # no control in auto mode
+        if not target_auto or (last_player is None and frame.player is None):
+            continue
+
+        # launch submarine 5 seconds after start
+        if time.time() - start_time > 5.0 and not sub_used:
+            sub_used = True
+            utils.click(354, 295, 27, 25, 0)
+
+        # pressing buttons
+        # only if we have enemys or don't have them for 5 seconds
+        if len(frame.enemys) > 0 or time.time() - last_enemy_time > 5.0:
+            last_enemy_time = time.time()
             if frame.air_button:
                 utils.click(428, 296, 25, 25, 0)
             if frame.torp_button:
                 utils.click(500, 296, 25, 25, 0)
 
-        if not frame.auto_button and check_end():
-            l_input.stop()
-            return
-
-        target_auto = True  # auto mode need?
-        if frame.barrage_button:
-            target_auto = False
-
-        if frame.auto_button != target_auto:  # change mode
-            utils.click(3, 15, 73, 15, 0)
-            continue
-
-        if not target_auto or (last_player is None and frame.player is None):  # no control in auto mode
-            continue
-
+        # player searching
         if frame.player is None:
             player_x, player_y = last_player
         else:
@@ -64,10 +84,12 @@ def fight():
         move_y = np.clip(move_y, -1.0, 1.0)
         move_x = 0.25 if player_x < 450 or frame.player is None else -0.1
 
+        # move faster if we have bomb ships
         if len(frame.bombs) > 0:
             move_y = (enemy_y - player_y) / 100.0
             move_x = 0.4
 
+        # make a move
         move(l_input, move_x, move_y)
 
 
