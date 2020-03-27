@@ -45,10 +45,10 @@ def prepare() -> str:
     MY_PORT = random.randint(58000, 59000)
 
     # prepare sh script
-    with open("android-data/touch.sh", mode="r") as f:
+    with open("android-data/touch.sh", mode="rb") as f:
         touch_sh = f.read()
-    with open("android-data/touch.sh", mode="w") as f:
-        f.write(touch_sh.replace("\r", ""))
+    with open("android-data/touch.sh", mode="wb") as f:
+        f.write(touch_sh.replace(b"\r", b""))
 
     with open("android-data/ss.sh", mode="w") as f:
         f.write(f"/data/local/tmp/ascreencap --stdout | /data/local/tmp/nc {get_ip()} {MY_PORT}")
