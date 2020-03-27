@@ -110,7 +110,7 @@ def send_girl():
             utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 2.0)
             Btn.commission_select_cancel.click(adb.screenshot())
             if Btn.commission_select_1.on_screen(adb.screenshot()):
-                utils.click(511, 328, 58, 13, 2.0)
+                utils.click(468, 321, 86, 27, 2.0)
                 return
     adb.back()
     time.sleep(2.0)

@@ -52,7 +52,7 @@ class Btn:
     commission_oil = Clickable("commission_oil")
     commission_cancel = Clickable("commission_cancel", x=529, y=170)
     commission_select_cancel = Clickable("commission_select_cancel", x=216, y=256)
-    commission_select_1 = Clickable("commission_select_1", x=320, y=333)
+    commission_select_1 = Clickable("commission_select_1", x=312, y=333)
 
     menu_can = Clickable("menu_can", delay=1.0)
     menu_money = Clickable("menu_money", delay=6.0)
