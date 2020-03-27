@@ -90,7 +90,7 @@ def get_enemy_points(quad: np.ndarray, player_point: Union[Tuple[int, int], None
         return []
 
     # hide some spaces
-    quad[14:20, 168:331] = 0
+    quad[14:22, 114:350] = 0
     # cut from player point
     x_offset = player_point[0] // 4 + 40
     quad = quad[:, x_offset:-22]
