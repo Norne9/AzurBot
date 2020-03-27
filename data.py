@@ -22,7 +22,7 @@ class Btn:
     got_it = Clickable("got_it", delay=1.0)
     auto = Clickable("auto", x=376, y=56, delay=1.0)
     auto_sub = Clickable("auto_sub", x=377, y=84, delay=1.0)
-    battle = Clickable("battle", x=529, y=306, delay=40.0)
+    battle = Clickable("battle", x=529, y=306, delay=2.0)
     confirm = Clickable("confirm", x=511, y=321, delay=6.0)
     lock_confirm = Clickable("lock_confirm", x=360, y=252)
     lose_confirm = Clickable("lose_confirm", x=286, y=258)
@@ -58,6 +58,10 @@ class Btn:
     menu_money = Clickable("menu_money", delay=6.0)
     menu_quit_cancel = Clickable("menu_quit_cancel", x=216, y=257, delay=1.0)
 
+    zero_heals = Clickable("zero_heals", x=68, y=273, delay=2.0)
+    use_heal = Clickable("use_heal", x=365, y=217, delay=3.0)
+    cancel_heal = Clickable("cancel_heal", x=238, y=219, delay=3.0)
+
 
 class Img:
     arrow = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)
@@ -73,4 +77,5 @@ class Img:
 
     # for triangle finding
     triangle_template = cv2.imread("images/triangle.png", cv2.IMREAD_GRAYSCALE)
+    triangle_big_template = cv2.imread("images/triangle_big.png", cv2.IMREAD_GRAYSCALE)
     deadzone_image = cv2.imread("images/deadzone.png", cv2.IMREAD_GRAYSCALE)

@@ -11,13 +11,7 @@ def fight():
     l_input = adb.LongInput()
     last_player = None
     while True:
-        start = time.time()
-
         screen = adb.screenshot(False)
-        if check_end(screen):
-            l_input.stop()
-            return
-
         frame = frame_recognition.process_frame(screen)
 
         if len(frame.enemys) > 0:  # only if we have enemys
@@ -25,6 +19,10 @@ def fight():
                 utils.click(428, 296, 25, 25, 0)
             if frame.torp_button:
                 utils.click(500, 296, 25, 25, 0)
+
+        if not frame.auto_button and check_end():
+            l_input.stop()
+            return
 
         target_auto = True  # auto mode need?
         if frame.barrage_button:
@@ -62,11 +60,15 @@ def fight():
             enemy_y = 1080 // 2
 
         # move to enemy y
-        move_y = (enemy_y - player_y) / 200.0
+        move_y = (enemy_y - player_y) / 300.0
         move_y = np.clip(move_y, -1.0, 1.0)
+        move_x = 0.25 if player_x < 450 or frame.player is None else -0.1
 
-        move(l_input, 0.3 if player_x < 350 else 0, move_y)
-        print(f"Time: {time.time() - start}")
+        if len(frame.bombs) > 0:
+            move_y = (enemy_y - player_y) / 100.0
+            move_x = 0.4
+
+        move(l_input, move_x, move_y)
 
 
 def move(l_input: adb.LongInput, x: float, y: float):
@@ -75,7 +77,6 @@ def move(l_input: adb.LongInput, x: float, y: float):
     l_input.tap(int(x), int(y))
 
 
-def check_end(image: np.ndarray) -> bool:
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    image = cv2.resize(image, (image.shape[1] // 3, image.shape[0] // 3), interpolation=cv2.INTER_AREA)
-    return Btn.confirm.on_screen(image)
+def check_end() -> bool:
+    screen = utils.screenshot()
+    return Btn.confirm.on_screen(screen)

@@ -6,18 +6,27 @@ import utils
 from data import Btn
 from game_actions import click_boss, click_enemy
 from menu_actions import after_level
+from game_fight import fight
 
 
 MODE_EVENT = False
+MODE_FIGHT = False
 MODE_SWAP = 5
 MODE_BOSS = 5
 
 
 def begin_battle():
-    for auto in [Btn.auto, Btn.auto_sub]:
-        auto.click(utils.screenshot())  # enable auto
+    if not MODE_FIGHT:  # enable auto in auto mode
+        for auto in [Btn.auto, Btn.auto_sub]:
+            auto.click(utils.screenshot())  # enable auto
 
-    #  Check mood
+    # use heals
+    if not Btn.zero_heals.on_screen(utils.screenshot()):
+        utils.click(47, 255, 25, 25, 2.0)
+        Btn.use_heal.click(utils.screenshot())
+        Btn.cancel_heal.click(utils.screenshot())
+
+    # Check mood
     screen = utils.screenshot()
     if Btn.mood.on_screen(screen):
         log("Ships in bad mood. Wait 60 min")
@@ -28,6 +37,11 @@ def begin_battle():
         return
 
     Btn.battle.click(utils.screenshot())  # begin battle
+    if MODE_FIGHT:
+        fight()
+    else:
+        log("Waiting 30s")
+        time.sleep(30.0)
 
 
 def run():
@@ -136,8 +150,9 @@ if __name__ == "__main__":
     parser.add_argument("-s", action="store_true", help="Make screenshots")
     parser.add_argument("--swap", action="store", type=int, default=MODE_SWAP, help="Battle count before swap")
     parser.add_argument("--boss", action="store", type=int, default=MODE_BOSS, help="Battle count before boss checking")
+    parser.add_argument("--fight", action="store_true", help="Manual control")
     args = parser.parse_args()
-    MODE_EVENT, MODE_SWAP, MODE_BOSS = args.event, args.swap, args.boss
+    MODE_EVENT, MODE_FIGHT, MODE_SWAP, MODE_BOSS = args.event, args.fight, args.swap, args.boss
 
     log(adb.prepare())
     if args.s:

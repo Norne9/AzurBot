@@ -23,11 +23,27 @@ def find_triangles(screen: np.ndarray, yellow: bool) -> List[Tuple[int, int]]:
     screen[Img.deadzone_image < 100] = 255
     screen = screen.astype(np.uint8)
 
-    res = cv2.matchTemplate(screen, Img.triangle_template, cv2.TM_SQDIFF_NORMED)
-    loc = np.where(res < 0.18)
-    locks = zip(*loc[::-1])
+    res1 = cv2.matchTemplate(screen, Img.triangle_template, cv2.TM_SQDIFF_NORMED)
+    res2 = cv2.matchTemplate(screen, Img.triangle_big_template, cv2.TM_SQDIFF_NORMED)
 
     result = []
+
+    # res2
+    loc = np.where(res2 < 0.15)
+    locks = zip(*loc[::-1])
+    for x, y in locks:  # Switch columns and rows
+        x, y = x + 100, y + 110
+        # check if its already exists
+        for rx, ry in result:
+            diff = abs(x - rx) + abs(y - ry)
+            if diff < 100:
+                break
+        else:  # add
+            result.append((x, y))
+
+    # res1
+    loc = np.where(res1 < 0.15)
+    locks = zip(*loc[::-1])
     for x, y in locks:  # Switch columns and rows
         x, y = x + 100, y + 110
         # check if its already exists

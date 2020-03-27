@@ -34,7 +34,7 @@ def click_boss() -> str:
         time.sleep(1.0)
         click_question()
         screen = utils.screenshot()
-        boss_point = img.find_best(screen, Img.boss, 0.94)
+        boss_point = img.find_best(screen, Img.boss, 0.8)
 
         if boss_point is not None:  # boss on screen
             x, y = boss_point
