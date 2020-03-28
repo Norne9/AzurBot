@@ -15,6 +15,7 @@ useless_buttons = [
     Btn.go2,
     Btn.lock_confirm,
     Btn.lose_confirm,
+    Btn.lose_confirm2,
     Btn.lose_close,
     Btn.evade,
     Btn.got_it,

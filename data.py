@@ -26,6 +26,7 @@ class Btn:
     confirm = Clickable("confirm", x=511, y=321, delay=6.0)
     lock_confirm = Clickable("lock_confirm", x=360, y=252)
     lose_confirm = Clickable("lose_confirm", x=286, y=258)
+    lose_confirm2 = Clickable("lose_confirm2", x=285, y=253)
     lose_close = Clickable("lose_close", x=298, y=305)
     commission = Clickable("commission", x=284, y=252)
     reconnect = Clickable("reconnect", x=360, y=252)
