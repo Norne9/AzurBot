@@ -85,10 +85,10 @@ def fight():
         # move to enemy y
         move_y = (enemy_y - player_y) / 300.0
         move_y = np.clip(move_y, -1.0, 1.0)
-        move_x = 0.25 if player_x < 450 or frame.player is None else -0.1
+        move_x = 0.25 if player_x < 350 or frame.player is None else -0.1
 
         # move forward if no enemys
-        if len(frame.enemys) == 0 or best_x > 1700:
+        if len(frame.enemys) == 0 or best_x > 1600:
             move_x = 0.25 if player_x < 750 or frame.player is None else -0.1
 
         # move faster if we have bomb ships

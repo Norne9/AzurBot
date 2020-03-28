@@ -19,7 +19,7 @@ swipes = [
     lambda: adb.swipe(1720, 200, 200, 880),
     lambda: adb.swipe(1720, 880, 200, 200),
     lambda: adb.swipe(200, 880, 1720, 200),
-    lambda: adb.swipe(1720, 200, 200, 880),
+    lambda: adb.swipe(1720, 200, 1320, 600),
 ]
 
 
