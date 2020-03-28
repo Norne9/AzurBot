@@ -38,12 +38,14 @@ def click_boss() -> str:
 
         if boss_point is not None:  # boss on screen
             x, y = boss_point
-            if img.is_deadzone(x * 3, y * 3):
-                continue
-
             for _ in range(2):  # 2 click try's
-                log(f"Tap boss [{x}, {y}]")
-                utils.click(x, y, 18, 18, 0)
+                point = enemy_finder.get_safe_point((x + 20) * 3, (y + 7) * 3)
+                if point is None:
+                    continue
+                bx, by = point
+
+                log(f"Tap boss [{bx}, {by}]")
+                adb.tap(bx, by)
                 if detect_info():  # don't try second click
                     break
                 if wait_for_battle(8.0):  # success if switch disappeared

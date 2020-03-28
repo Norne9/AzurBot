@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from typing import List, Tuple, Union
+from data import Img
 
 
 def which(screen: np.ndarray, templates: List[np.ndarray]) -> int:
@@ -47,36 +48,6 @@ def find_best(screen: np.ndarray, template: np.ndarray, threshold: float = 0.95)
         return max_loc
     else:
         return None
-
-
-def is_deadzone(x: int, y: int):
-    return (x > 1750) or (x > 930 and y > 880) or (x < 900 and y < 245) or (x < 186) or (y < 157)
-
-
-def find_zones_color(
-    screen: np.ndarray, color_bgr: Tuple[int, int, int], size: Tuple[int, int]
-) -> List[Tuple[int, int]]:
-    template = np.zeros((*size, 3), dtype=np.uint8)
-    template[:, :] = color_bgr
-
-    res = cv2.matchTemplate(screen, template, cv2.TM_SQDIFF_NORMED)
-    loc = np.where(res < 0.01)
-    locks = zip(*loc[::-1])
-
-    result = []
-    for pt in locks:  # Switch columns and rows
-        x, y = pt[0] + 40, pt[1] + 35
-        if is_deadzone(x, y):  # ignore stars & buttons
-            continue
-        # check if its already exists
-        for rx, ry in result:
-            diff = abs(x - rx) + abs(y - ry)
-            if diff < 100:
-                break
-        else:  # add
-            result.append((x, y))
-
-    return result
 
 
 def check_zone(screen: np.ndarray, template: np.ndarray, x: int, y: int) -> float:
