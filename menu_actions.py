@@ -109,7 +109,7 @@ def send_girl():
         for y in range(3):
             utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 2.0)
             Btn.commission_select_cancel.click(adb.screenshot())
-            if Btn.commission_select_1.on_screen(adb.screenshot()):
+            if not Btn.commission_select_0.on_screen(adb.screenshot()):
                 utils.click(468, 321, 86, 27, 2.0)
                 return
     adb.back()
