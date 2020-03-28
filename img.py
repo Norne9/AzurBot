@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from typing import List, Tuple, Union
-from data import Img
 
 
 def which(screen: np.ndarray, templates: List[np.ndarray]) -> int:
