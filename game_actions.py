@@ -29,7 +29,7 @@ def sort_near(ships: List[Tuple[int, int]], point: Tuple[int, int]):
 
 def click_boss() -> str:
     log(f"Searching boss")
-    for sw in swipes:
+    for sw in swipes * 2:
         sw()  # swipe in some direction
         time.sleep(1.0)
         click_question()
@@ -65,7 +65,7 @@ def click_boss() -> str:
 
 def click_enemy() -> bool:
     log("Searching ships")
-    for yellow in [True, False]:
+    for yellow in [True, True, False, False]:
         for sw in swipes:
             sw()  # swipe in some direction
             time.sleep(1.0)
