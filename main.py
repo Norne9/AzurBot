@@ -9,6 +9,7 @@ from menu_actions import after_level
 from game_fight import fight
 
 
+MODE_STARTSWAP = False
 MODE_EVENT = False
 MODE_FIGHT = False
 MODE_SWAP = 5
@@ -70,6 +71,8 @@ def run():
                 go_clicks = 0
                 adb.back()
                 after_level()
+            if MODE_STARTSWAP:
+                Btn.switch.click(utils.screenshot())
             continue
 
         # level selection
@@ -151,8 +154,10 @@ if __name__ == "__main__":
     parser.add_argument("--swap", action="store", type=int, default=MODE_SWAP, help="Battle count before swap")
     parser.add_argument("--boss", action="store", type=int, default=MODE_BOSS, help="Battle count before boss checking")
     parser.add_argument("--fight", action="store_true", help="Manual control")
+    parser.add_argument("--startswap", action="store_true", help="Swap at beginning of battle")
     args = parser.parse_args()
     MODE_EVENT, MODE_FIGHT, MODE_SWAP, MODE_BOSS = args.event, args.fight, args.swap, args.boss
+    MODE_STARTSWAP = args.startswap
 
     log(adb.prepare())
     if args.s:

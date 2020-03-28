@@ -9,7 +9,6 @@ from data import Btn
 
 def fight():
     start_time, last_enemy_time, sub_used = -1.0, -1.0, False
-    l_input = adb.LongInput()
     last_player = None
     while True:
         screen = adb.screenshot(False)
@@ -22,7 +21,7 @@ def fight():
 
         # level finished
         if not frame.auto_button and check_end():
-            l_input.stop()
+            adb.release()
             log(f"Level finished in {time.time() - start_time:.2f}s")
             return
 
@@ -34,6 +33,7 @@ def fight():
         # change mode
         if frame.auto_button != target_auto:
             utils.click(3, 15, 73, 15, 0)
+            adb.release()
             continue
 
         # no control in auto mode
@@ -44,6 +44,7 @@ def fight():
         if time.time() - start_time > 5.0 and not sub_used:
             sub_used = True
             utils.click(354, 295, 27, 25, 0)
+            adb.release()
 
         # pressing buttons
         # only if we have enemys or don't have them for 5 seconds
@@ -51,8 +52,10 @@ def fight():
             last_enemy_time = time.time()
             if frame.air_button:
                 utils.click(428, 296, 25, 25, 0)
+                adb.release()
             if frame.torp_button:
                 utils.click(500, 296, 25, 25, 0)
+                adb.release()
 
         # player searching
         if frame.player is None:
@@ -90,13 +93,13 @@ def fight():
             move_x = 0.4
 
         # make a move
-        move(l_input, move_x, move_y)
+        move(move_x, move_y)
 
 
-def move(l_input: adb.LongInput, x: float, y: float):
+def move(x: float, y: float):
     x = 227 + x * 55
     y = 883 + y * 55
-    l_input.tap(int(x), int(y))
+    adb.hold(x, y)
 
 
 def check_end() -> bool:

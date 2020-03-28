@@ -28,7 +28,7 @@ def process_frame(screen: np.ndarray) -> Frame:
     return Frame(player, enemys, bombs, auto_button, air_button, torp_button, barrage_button)
 
 
-def show_frame(screen: np.ndarray, frame: Frame, x: float, y: float):
+def show_frame(screen: np.ndarray, frame: Frame):
     if frame.player:
         cv2.drawMarker(screen, frame.player, (0, 255, 0), markerType=cv2.MARKER_STAR, markerSize=64)
 
@@ -38,7 +38,7 @@ def show_frame(screen: np.ndarray, frame: Frame, x: float, y: float):
     for point in frame.bombs:
         cv2.drawMarker(screen, point, (0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=64)
 
-    text = f"[{y}] "
+    text = ""
     if frame.auto_button:
         text += "auto, "
     if frame.air_button:
@@ -93,7 +93,7 @@ def get_enemy_points(quad: np.ndarray, player_point: Union[Tuple[int, int], None
     quad[14:22, 114:350] = 0
     # cut from player point
     x_offset = player_point[0] // 4 + 40
-    quad = quad[:, x_offset:-22]
+    quad = quad[:, x_offset:]  # -22
 
     res = 1.0 - cv2.matchTemplate(quad, Img.enemy_color, cv2.TM_SQDIFF_NORMED)
     res[res < 0.99] = 0
@@ -106,7 +106,10 @@ def get_enemy_points(quad: np.ndarray, player_point: Union[Tuple[int, int], None
 
     result = []
     for py, px in cords:
-        result.append((int((x_offset + px) * 4), int(py * 4) + 170))
+        if x_offset + px > 480 - 23:
+            result.append((int((x_offset + px) * 4), int(py * 4)))
+        else:
+            result.append((int((x_offset + px) * 4), int(py * 4) + 170))
 
     return result
 

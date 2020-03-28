@@ -136,32 +136,25 @@ def start_game():
     shell(["monkey", "-p", "com.YoStarEN.AzurLane", "1"])
 
 
-class LongInput:
-    process: Union[None, subprocess.Popen]
-    last_time: float
+def hold(x, y):
+    cmd_list = [
+        f"sendevent /dev/input/event4 {1} {330} {1}",
+        f"sendevent /dev/input/event4 {3} {53} {x}",
+        f"sendevent /dev/input/event4 {3} {54} {y}",
+        f"sendevent /dev/input/event4 {0} {2} {0}",
+        f"sendevent /dev/input/event4 {0} {0} {0}",
+    ]
+    cmd = " ; ".join(cmd_list).split()
+    shell(cmd)
 
-    def __init__(self):
-        self.process = subprocess.Popen(
-            ["adb", "shell", "/data/local/tmp/touch.sh"],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        )
-        self.last_time = 0
 
-    def tap(self, x, y):
-        if time.time() - self.last_time < 0.3:
-            return
-
-        self.process.stdin.write(f"{x} {y}\n")
-        self.process.stdin.flush()
-        while not self.process.stdout.readline().startswith("ok-ok"):
-            pass
-        self.last_time = time.time()
-
-    def stop(self):
-        if self.process is not None:  # if started
-            if self.process.poll() is None:  # and not ended
-                self.process.terminate()  # send terminate
-                self.process.wait()  # and wait for it
-            self.process = None
+def release():
+    cmd_list = [
+        f"sendevent /dev/input/event4 {1} {330} {0}",
+        f"sendevent /dev/input/event4 {3} {53} {0}",
+        f"sendevent /dev/input/event4 {3} {54} {0}",
+        f"sendevent /dev/input/event4 {0} {2} {0}",
+        f"sendevent /dev/input/event4 {0} {0} {0}",
+    ]
+    cmd = " ; ".join(cmd_list).split()
+    shell(cmd)
