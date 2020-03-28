@@ -66,6 +66,7 @@ def fight():
         enemy_y = -1
 
         # finding best enemy
+        best_x = 100000
         if len(frame.bombs) > 0:  # bombs always best
             best_dst = 100000
             for x, y in frame.bombs:
@@ -74,7 +75,6 @@ def fight():
                     best_dst = dst
                     enemy_y = y
         elif len(frame.enemys) > 0:  # normal enemys - second target
-            best_x = 100000
             for x, y in frame.enemys:
                 if x < best_x:
                     best_x = x
@@ -86,6 +86,10 @@ def fight():
         move_y = (enemy_y - player_y) / 300.0
         move_y = np.clip(move_y, -1.0, 1.0)
         move_x = 0.25 if player_x < 450 or frame.player is None else -0.1
+
+        # move forward if no enemys
+        if len(frame.enemys) == 0 or best_x > 1700:
+            move_x = 0.25 if player_x < 750 or frame.player is None else -0.1
 
         # move faster if we have bomb ships
         if len(frame.bombs) > 0:

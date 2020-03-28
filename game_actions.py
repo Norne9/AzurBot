@@ -7,12 +7,19 @@ from data import Btn, Img
 from typing import List, Tuple
 from log import log
 
+
+def double_swap():
+    utils.click(475, 326, 81, 22, 1.5)
+    utils.click(475, 326, 81, 22, 5)
+
+
 swipes = [
-    lambda: None,
+    double_swap,
     lambda: adb.swipe(400, 400, 1720, 880),
     lambda: adb.swipe(1720, 200, 200, 880),
     lambda: adb.swipe(1720, 880, 200, 200),
     lambda: adb.swipe(200, 880, 1720, 200),
+    lambda: adb.swipe(1720, 200, 200, 880),
 ]
 
 
@@ -29,7 +36,7 @@ def sort_near(ships: List[Tuple[int, int]], point: Tuple[int, int]):
 
 def click_boss() -> str:
     log(f"Searching boss")
-    for sw in swipes * 2:
+    for sw in swipes:
         sw()  # swipe in some direction
         time.sleep(1.0)
         click_question()
@@ -67,7 +74,7 @@ def click_boss() -> str:
 
 def click_enemy() -> bool:
     log("Searching ships")
-    for yellow in [True, True, False, False]:
+    for yellow in [True, False]:
         for sw in swipes:
             sw()  # swipe in some direction
             time.sleep(1.0)
