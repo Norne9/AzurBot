@@ -41,33 +41,41 @@ def click_boss() -> str:
         time.sleep(1.0)
         click_question()
         screen = utils.screenshot()
-        boss_point = img.find_best(screen, Img.boss, 0.8)
 
-        if boss_point is not None:  # boss on screen
-            x, y = boss_point
-            for _ in range(2):  # 2 click try's
-                point = enemy_finder.get_safe_point((x + 20) * 3, (y + 7) * 3)
-                if point is None:
-                    continue
-                bx, by = point
+        boss_point = img.find_best(screen, Img.boss, 0.7)
+        if boss_point is None:
+            boss_point = img.find_best(screen, Img.boss_mini, 0.7)
+            if boss_point is None:
+                continue
+            else:
+                boss_point = boss_point[0] - 4, boss_point[1] - 6
+        else:
+            boss_point = boss_point[0] + 20, boss_point[1] + 7
 
-                log(f"Tap boss [{bx}, {by}]")
-                adb.tap(bx, by)
-                if detect_info():  # don't try second click
-                    break
-                if wait_for_battle(8.0):  # success if switch disappeared
-                    return "boss"
+        x, y = boss_point
+        for _ in range(2):  # 2 click try's
+            point = enemy_finder.get_safe_point((x + 20) * 3, (y + 7) * 3)
+            if point is None:
+                continue
+            bx, by = point
 
-            # failed
-            log(f"Searching ships near boss")
-            ships = []
-            screen = adb.screenshot(False)
-            for yellow in [True, False]:
-                ships.extend(enemy_finder.find_triangles(screen, yellow))
-            sort_near(ships, (x * 3, y * 3))  # ships near boss
+            log(f"Tap boss [{bx}, {by}]")
+            adb.tap(bx, by)
+            if detect_info():  # don't try second click
+                break
+            if wait_for_battle(8.0):  # success if switch disappeared
+                return "boss"
 
-            if tap_ships(ships):
-                return "ship"
+        # failed
+        log(f"Searching ships near boss")
+        ships = []
+        screen = adb.screenshot(False)
+        for yellow in [True, False]:
+            ships.extend(enemy_finder.find_triangles(screen, yellow))
+        sort_near(ships, (x * 3, y * 3))  # ships near boss
+
+        if tap_ships(ships):
+            return "ship"
 
     return "none"
 
