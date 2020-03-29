@@ -54,7 +54,7 @@ def click_boss() -> str:
 
         x, y = boss_point
         for _ in range(2):  # 2 click try's
-            point = enemy_finder.get_safe_point((x + 20) * 3, (y + 7) * 3)
+            point = enemy_finder.get_safe_point(x * 3, y * 3)
             if point is None:
                 continue
             bx, by = point
