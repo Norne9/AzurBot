@@ -9,8 +9,9 @@ from log import log
 
 
 def double_swap():
-    utils.click(487, 332, 56, 12, 3.0)
-    utils.click(487, 332, 56, 12, 5.0)
+    utils.click(495, 358, 40, 2, 1.0)
+    utils.click(497, 334, 34, 7, 3.0)
+    utils.click(497, 334, 34, 7, 5.0)
 
 
 swipes = [
