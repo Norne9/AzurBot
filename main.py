@@ -79,11 +79,14 @@ def run():
             continue
 
         # level selection
-        if Btn.level_name.on_screen(screen):
+        if Btn.daily.on_screen(screen):
             if MODE_EVENT:
                 utils.click(587, 80, 31, 29, 5.0)
             else:
-                Btn.level_name.click(screen)
+                for _ in range(13):
+                    if Btn.level_name.click(utils.screenshot()):
+                        break
+                    utils.click(25, 178, 6, 17, 3.0)
             continue
         elif MODE_EVENT and Btn.event_name.click(screen):
             continue

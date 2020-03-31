@@ -11,9 +11,11 @@ class Btn:
     level_name = Clickable("level_name")
     event_name = Clickable("event_name")
     unable_info = Clickable("unable_info")
+    daily = Clickable("daily", x=403, y=333)
 
     close = Clickable("close", x=590, y=26)
     item = Clickable("item", x=273, y=107)
+    item2 = Clickable("item2", x=274, y=72)
     menu_battle = Clickable("menu_battle", x=507, y=150)
     cmode = Clickable("cmode", x=518, y=294)
     go1 = Clickable("go1", x=459, y=247, delay=1.0)
