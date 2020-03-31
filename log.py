@@ -14,11 +14,10 @@ def send_msg(msg: str):
         return
     hook_url = os.environ["al_log"]
 
-    result = requests.post(
-        hook_url, timeout=1, data=json.dumps({"content": msg}), headers={"Content-Type": "application/json"}
-    )
-
     try:
+        result = requests.post(
+            hook_url, timeout=1, data=json.dumps({"content": msg}), headers={"Content-Type": "application/json"}
+        )
         result.raise_for_status()
     except requests.exceptions.Timeout:
         pass
@@ -33,9 +32,9 @@ def send_img(name: str):
 
     with open(name, mode="rb") as f:
         file = f.read()
-    result = requests.post(hook_url, timeout=5, files={"file": ("screen.png", file)})
 
     try:
+        result = requests.post(hook_url, timeout=5, files={"file": ("screen.png", file)})
         result.raise_for_status()
     except requests.exceptions.Timeout:
         pass
