@@ -3,10 +3,10 @@ import random
 import time
 import cv2
 from data import Btn
-from log import log
+from log import log, send_img
 
 useless_buttons = [
-    Btn.item,
+    # Btn.item,
     Btn.reconnect,
     Btn.download,
     Btn.close,
@@ -24,6 +24,12 @@ useless_buttons = [
 
 def screenshot():
     screen = adb.screenshot()
+
+    if Btn.item.click(screen):  # send what we get to discord
+        cv2.imwrite("test.png", screen)
+        send_img("test.png")
+        return screenshot()
+
     for btn in useless_buttons:
         if btn.click(screen):
             return screenshot()
@@ -32,11 +38,12 @@ def screenshot():
 
 def do_nothing():
     x1, y1 = random.randint(174, 514) * 3, random.randint(57, 77) * 3
-    x2, y2 = random.randint(174, 514) * 3, random.randint(57, 77) * 3
     adb.tap(x1, y1)
     time.sleep(1.0)
-    adb.swipe(x1, y1, x2, y2)
-    time.sleep(1.0)
+
+    # x2, y2 = random.randint(174, 514) * 3, random.randint(57, 77) * 3
+    # adb.swipe(x1, y1, x2, y2)
+    # time.sleep(1.0)
 
 
 def click(x: int, y: int, w: int, h: int, delay: float):
