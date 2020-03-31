@@ -72,7 +72,8 @@ def run():
                 adb.back()
                 after_level()
             if MODE_STARTSWAP:
-                Btn.switch.click(utils.screenshot())
+                utils.click(495, 358, 40, 2, 1.0)
+                utils.click(497, 334, 34, 7, 5.0)
             continue
 
         # level selection
