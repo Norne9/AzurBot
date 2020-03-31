@@ -20,7 +20,7 @@ def send_msg(msg: str):
 
     try:
         result.raise_for_status()
-    except requests.Timeout:
+    except requests.exceptions.Timeout:
         pass
     except requests.exceptions.HTTPError as err:
         log(f"Discord error: {err}")
@@ -37,7 +37,7 @@ def send_img(name: str):
 
     try:
         result.raise_for_status()
-    except requests.Timeout:
+    except requests.exceptions.Timeout:
         pass
     except requests.exceptions.HTTPError as err:
         log(f"Discord error: {err}")
