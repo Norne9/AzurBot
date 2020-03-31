@@ -14,10 +14,14 @@ def send_msg(msg: str):
         return
     hook_url = os.environ["al_log"]
 
-    result = requests.post(hook_url, data=json.dumps({"content": msg}), headers={"Content-Type": "application/json"})
+    result = requests.post(
+        hook_url, timeout=1, data=json.dumps({"content": msg}), headers={"Content-Type": "application/json"}
+    )
 
     try:
         result.raise_for_status()
+    except requests.Timeout:
+        pass
     except requests.exceptions.HTTPError as err:
         log(f"Discord error: {err}")
 
@@ -29,9 +33,11 @@ def send_img(name: str):
 
     with open(name, mode="rb") as f:
         file = f.read()
-    result = requests.post(hook_url, files={"file": ("screen.png", file)})
+    result = requests.post(hook_url, timeout=5, files={"file": ("screen.png", file)})
 
     try:
         result.raise_for_status()
+    except requests.Timeout:
+        pass
     except requests.exceptions.HTTPError as err:
         log(f"Discord error: {err}")
