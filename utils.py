@@ -26,7 +26,7 @@ def screenshot():
     screen = adb.screenshot()
 
     if Btn.item.click(screen):  # send what we get to discord
-        cv2.imwrite("test.png", screen)
+        cv2.imwrite("test.png", screen[140:220, 80:560])
         send_img("test.png")
         return screenshot()
 
