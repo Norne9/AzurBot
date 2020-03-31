@@ -71,6 +71,7 @@ def run():
                 go_clicks = 0
                 adb.back()
                 after_level()
+                continue
             utils.screenshot()
             if MODE_STARTSWAP:
                 utils.click(495, 358, 40, 2, 1.0)
