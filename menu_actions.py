@@ -47,7 +47,7 @@ def after_level():
     Btn.enhance.click(utils.screenshot())
 
     no_enhance = 0
-    while no_enhance < 4:
+    while no_enhance < 2:
         # click enhance
         if Btn.enhance.on_screen(utils.screenshot()):
             utils.click(483, 302, 58, 19, 0.5)  # press fill button
@@ -70,8 +70,36 @@ def after_level():
         )
         time.sleep(1.0)
 
-    log("Done!")
     utils.click_home()  # go to main menu
+    log("Retiring trash")
+    retire_ships()
+
+    utils.click_home()  # go to main menu
+    log("Done!")
+
+
+def retire_ships():
+    def sort_rare():
+        utils.click(556, 7, 32, 12, 3.0)  # click sort
+        utils.click(318, 226, 31, 8, 1.0)  # click rare
+        utils.click(372, 318, 55, 7, 3.0)  # click confirm
+
+    utils.click(491, 336, 55, 16, 3.0)  # click build
+    utils.click(10, 221, 30, 32, 3.0)  # click retire
+    sort_rare()
+
+    # select ships
+    for x in range(7):
+        utils.click(54 + x * 82, 56, 54, 50, 0.3)
+
+    utils.click(556, 328, 58, 13, 2.0)  # click confirm
+
+    if Btn.retire_confirm.click(utils.screenshot()):  # press confirm
+        if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
+            if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
+                utils.screenshot()
+
+    sort_rare()
 
 
 def parse_time(time_pic: np.ndarray) -> int:
