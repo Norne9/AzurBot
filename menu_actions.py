@@ -47,7 +47,7 @@ def after_level():
     Btn.enhance.click(utils.screenshot())
 
     no_enhance = 0
-    while no_enhance < 2:
+    while True:
         # click enhance
         if Btn.enhance.on_screen(utils.screenshot()):
             utils.click(483, 302, 58, 19, 0.5)  # press fill button
@@ -65,7 +65,10 @@ def after_level():
             no_enhance += 10
             log("No enhance button!")
 
-        adb.swipe(
+        if no_enhance >= 2:  # stop if we can't enhance 2 times
+            break
+
+        adb.swipe(  # swipe to next ship
             random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
         )
         time.sleep(1.0)
@@ -80,13 +83,19 @@ def after_level():
 
 def retire_ships():
     def sort_rare():
-        utils.click(556, 7, 32, 12, 3.0)  # click sort
+        utils.click(556, 7, 32, 12, 2.0)  # click sort
         utils.click(318, 226, 31, 8, 1.0)  # click rare
-        utils.click(372, 318, 55, 7, 3.0)  # click confirm
+        utils.click(372, 318, 55, 7, 2.0)  # click confirm
 
     utils.click(491, 336, 55, 16, 3.0)  # click build
     utils.click(10, 221, 30, 32, 3.0)  # click retire
     sort_rare()
+
+    # no ships
+    if Btn.retire_nothing.on_screen(utils.screenshot()):
+        log("Nothing to retire")
+        sort_rare()  # disable sorting
+        return
 
     # select ships
     for x in range(7):

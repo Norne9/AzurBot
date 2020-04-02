@@ -2,11 +2,21 @@ import time
 import requests
 import os
 import json
+import threading
+
+
+send_thread = None
 
 
 def log(text: str):
+    global send_thread
     print(f"[{time.strftime('%X')}] {text}")
-    send_msg(text)
+
+    if send_thread:
+        send_thread.join()
+
+    send_thread = threading.Thread(target=send_msg, args=(text,))
+    send_thread.start()
 
 
 def send_msg(msg: str):

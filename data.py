@@ -43,6 +43,7 @@ class Btn:
     enhance_break = Clickable("enhance_break", x=367, y=277)
     enhance = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
     retire_confirm = Clickable("retire_confirm", x=476, y=314)
+    retire_nothing = Clickable("retire_nothing", x=47, y=170)
 
     commission_completed = Clickable("commission_completed", x=192, y=136)
     commission_s = Clickable("commission_s")

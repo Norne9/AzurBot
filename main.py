@@ -83,7 +83,12 @@ def run():
             if MODE_EVENT:
                 utils.click(587, 80, 31, 29, 5.0)
             else:
-                for _ in range(13):
+                if Btn.level_name.click(screen):  # level on screen, no need to search
+                    continue
+                for _ in range(15):  # go to right world
+                    utils.click(605, 181, 9, 13, 0.25)
+                time.sleep(6.0)  # wait for warnings disappear
+                for _ in range(14):  # go back until level found
                     if Btn.level_name.click(utils.screenshot()):
                         break
                     utils.click(25, 178, 6, 17, 3.0)
@@ -139,6 +144,13 @@ def run():
             utils.do_nothing()
 
 
+def collect():
+    while True:
+        after_level()
+        log("Waiting 10 min...")
+        time.sleep(10 * 60)
+
+
 def shot():
     import cv2
 
@@ -161,12 +173,15 @@ if __name__ == "__main__":
     parser.add_argument("--boss", action="store", type=int, default=MODE_BOSS, help="Battle count before boss checking")
     parser.add_argument("--fight", action="store_true", help="Manual control")
     parser.add_argument("--startswap", action="store_true", help="Swap at beginning of battle")
+    parser.add_argument("--collect", action="store_true", help="Do not fight, just collect oil and send commissions")
     args = parser.parse_args()
     MODE_EVENT, MODE_FIGHT, MODE_SWAP, MODE_BOSS = args.event, args.fight, args.swap, args.boss
     MODE_STARTSWAP = args.startswap
 
     log(adb.prepare())
-    if args.s:
+    if args.collect:
+        collect()
+    elif args.s:
         shot()
     else:
         run()
