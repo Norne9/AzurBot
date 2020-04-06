@@ -54,6 +54,7 @@ def click_boss() -> str:
             boss_point = boss_point[0] + 20, boss_point[1] + 7
 
         x, y = boss_point
+        point = None
         for _ in range(2):  # 2 click try's
             point = enemy_finder.get_safe_point(x * 3, y * 3)
             if point is None:
@@ -66,6 +67,9 @@ def click_boss() -> str:
                 break
             if wait_for_battle(8.0):  # success if switch disappeared
                 return "boss"
+
+        if point is None:  # don't attack ships if boss not clickable
+            continue
 
         # failed
         log(f"Searching ships near boss")
