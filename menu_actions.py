@@ -194,9 +194,12 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
 
 
 def send_commission():
+    clicked_complete = False
     utils.click(200, 135, 42, 12, 2.0)  # click commissions
     while Btn.commission_s.click(utils.screenshot()):
-        pass
+        clicked_complete = True
+    if clicked_complete:
+        utils.click(200, 135, 42, 12, 2.0)  # click go
 
     if Btn.commission_0.on_screen(utils.screenshot()):
         log("0 fleets")
