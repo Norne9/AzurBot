@@ -16,7 +16,7 @@ MODE_SWAP = 5
 MODE_BOSS = 5
 
 
-def begin_battle():
+def begin_battle() -> bool:
     if not MODE_FIGHT:  # enable auto in auto mode
         for auto in [Btn.auto, Btn.auto_sub]:
             auto.click(utils.screenshot())  # enable auto
@@ -32,23 +32,26 @@ def begin_battle():
     if Btn.mood.on_screen(screen):
         log("Ships in bad mood. Wait 60 min")
         utils.warn("mood", screen)
-        utils.click_home()  # go to main menu
         time.sleep(60 * 60)
         log("Continue")
-        return
+        return False
 
     Btn.battle.click(utils.screenshot())  # begin battle
+    if Btn.battle.on_screen(utils.screenshot()):  # check if battle started
+        return False
+
     if MODE_FIGHT:
         fight()
     else:
         log("Waiting 30s")
         time.sleep(30.0)
+    return True
 
 
 def run():
     after_level()  # free space & collect oil first
 
-    clear_count, battle_count, battle_clicks, go_clicks = 0, 0, 0, 0
+    clear_count, battle_count, go_clicks = 0, 0, 0
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
     while True:
@@ -56,12 +59,8 @@ def run():
 
         if Btn.battle.on_screen(screen):
             is_nothing = False
-            battle_clicks += 1
-            if battle_clicks > 3:  # battle don't work, collect oil
-                battle_clicks = 0
+            if not begin_battle():
                 after_level()
-                continue
-            begin_battle()
             continue
 
         # click go

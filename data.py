@@ -24,7 +24,7 @@ class Btn:
     got_it = Clickable("got_it", delay=1.0)
     auto = Clickable("auto", x=376, y=56, delay=1.0)
     auto_sub = Clickable("auto_sub", x=377, y=84, delay=1.0)
-    battle = Clickable("battle", x=529, y=306, delay=2.0)
+    battle = Clickable("battle", x=529, y=306, delay=5.0)
     confirm = Clickable("confirm", x=511, y=321, delay=6.0)
     lock_confirm = Clickable("lock_confirm", x=360, y=252)
     lose_confirm = Clickable("lose_confirm", x=286, y=258)
