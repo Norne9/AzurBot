@@ -65,7 +65,7 @@ def after_level():
             no_enhance += 10
             log("No enhance button!")
 
-        if no_enhance >= 2:  # stop if we can't enhance 2 times
+        if no_enhance >= 4:  # stop if we can't enhance 4 times
             break
 
         adb.swipe(  # swipe to next ship
