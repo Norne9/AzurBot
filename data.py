@@ -60,7 +60,7 @@ class Btn:
     commission_select_0 = Clickable("commission_select_0", x=297, y=333)
 
     menu_can = Clickable("menu_can", delay=1.0)
-    menu_money = Clickable("menu_money", delay=6.0)
+    menu_money = Clickable("menu_money", delay=1.0)
     menu_quit_cancel = Clickable("menu_quit_cancel", x=216, y=257, delay=1.0)
 
     zero_heals = Clickable("zero_heals", x=68, y=273, delay=2.0)

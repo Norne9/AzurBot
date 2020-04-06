@@ -9,16 +9,23 @@ import numpy as np
 
 
 def after_level():
+    utils.click_home()  # go to main menu
+    log("Removing trash")
+    enhance_ships()
+
+    utils.click_home()  # go to main menu
+    log("Retiring trash")
+    retire_ships()
+
     log("Collecting oil")
     utils.click_home()  # go to main menu
+    left_panel()
 
-    screen = adb.screenshot()
-    if not Btn.menu_battle.on_screen(screen):  # check if we in main menu
-        utils.warn("menu", screen)
-        log("Something went wrong")
-        utils.click_home()
-        return
+    utils.click_home()  # go to main menu
+    log("Done!")
 
+
+def left_panel():
     utils.click(3, 70, 11, 24, 3.0)  # open left panel
     screen = adb.screenshot()
     Btn.menu_can.click(screen)  # tap can
@@ -26,16 +33,9 @@ def after_level():
 
     send_commission()
     log("Commissions done")
-    utils.click_home()
 
-    log("Removing trash")
-    screen = adb.screenshot()
-    if not Btn.menu_battle.on_screen(screen):  # check if we in main menu
-        utils.warn("menu", screen)
-        log("Something went wrong")
-        utils.click_home()
-        return
 
+def enhance_ships():
     utils.click(87, 332, 74, 24, 3.0)  # open dock
 
     Btn.sort.click(utils.screenshot())
@@ -72,13 +72,6 @@ def after_level():
             random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
         )
         time.sleep(1.0)
-
-    utils.click_home()  # go to main menu
-    log("Retiring trash")
-    retire_ships()
-
-    utils.click_home()  # go to main menu
-    log("Done!")
 
 
 def retire_ships():
@@ -155,7 +148,6 @@ def send_girl():
 
 def send_best_commission(oil: bool, max_time: int) -> bool:
     if Btn.commission_0.on_screen(utils.screenshot()):  # check if we have fleets
-        log("0 fleets")
         return False
 
     for _ in range(2):  # swipe to bottom
@@ -202,34 +194,42 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
 
 
 def send_commission():
-    if Btn.commission_completed.click(utils.screenshot()):
-        log("Completing commission")
-        while Btn.commission_s.click(utils.screenshot()):
-            Btn.item.click(utils.screenshot())
+    utils.click(200, 135, 42, 12, 2.0)  # click commissions
+    while Btn.commission_s.click(utils.screenshot()):
+        pass
 
-    if Btn.commission_go.click(utils.screenshot()):
-        if Btn.commission_0.on_screen(utils.screenshot()):
-            log("0 fleets")
-            return
-    else:
+    if Btn.commission_0.on_screen(utils.screenshot()):
+        log("0 fleets")
         return
 
     log("Starting urgent commissions oil")
     utils.click(11, 114, 28, 25, 3.0)
     while send_best_commission(True, 40000):
         pass
+    if Btn.commission_0.on_screen(utils.screenshot()):
+        log("0 fleets")
+        return
 
     log("Starting daily commissions oil")
     utils.click(12, 63, 30, 30, 3.0)
     while send_best_commission(True, 40000):
         pass
+    if Btn.commission_0.on_screen(utils.screenshot()):
+        log("0 fleets")
+        return
 
     log("Starting urgent commissions")
     utils.click(11, 114, 28, 25, 3.0)
     while send_best_commission(False, 15000):
         pass
+    if Btn.commission_0.on_screen(utils.screenshot()):
+        log("0 fleets")
+        return
 
     log("Starting daily commissions")
     utils.click(12, 63, 30, 30, 3.0)
     while send_best_commission(False, 15000):
         pass
+    if Btn.commission_0.on_screen(utils.screenshot()):
+        log("0 fleets")
+        return

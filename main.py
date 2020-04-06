@@ -5,7 +5,7 @@ import argparse
 import utils
 from data import Btn
 from game_actions import click_boss, click_enemy
-from menu_actions import after_level
+from menu_actions import after_level, left_panel
 from game_fight import fight
 
 
@@ -146,9 +146,11 @@ def run():
 
 def collect():
     while True:
-        after_level()
-        log("Waiting 10 min...")
-        time.sleep(10 * 60)
+        utils.click_home()
+        left_panel()
+        utils.click_home()
+        log("Waiting 5 min...")
+        time.sleep(5 * 60)
 
 
 def shot():
