@@ -138,7 +138,7 @@ def start_game():
 
 
 def append_command(data: bytearray, cmd_type: int, code: int, value: int):
-    data.extend(struct.pack("<llHHi", 0, 0, cmd_type, code, value))
+    data.extend(struct.pack("<llHHi", 0, 0, cmd_type, code, int(value)))
 
 
 def hold(x, y):
