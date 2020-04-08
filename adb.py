@@ -4,6 +4,7 @@ import numpy as np
 import socket
 import random
 import os
+import struct
 import time
 from typing import List, Union
 
@@ -136,25 +137,27 @@ def start_game():
     shell(["monkey", "-p", "com.YoStarEN.AzurLane", "1"])
 
 
+def append_command(data: bytearray, cmd_type: int, code: int, value: int):
+    data.extend(struct.pack("<llHHi", 0, 0, cmd_type, code, value))
+
+
 def hold(x, y):
-    cmd_list = [
-        f"sendevent /dev/input/event4 {1} {330} {1}",
-        f"sendevent /dev/input/event4 {3} {53} {x}",
-        f"sendevent /dev/input/event4 {3} {54} {y}",
-        f"sendevent /dev/input/event4 {0} {2} {0}",
-        f"sendevent /dev/input/event4 {0} {0} {0}",
-    ]
-    cmd = " ; ".join(cmd_list).split()
-    shell(cmd)
+    data = bytearray()
+    append_command(data, 1, 330, 1)
+    append_command(data, 3, 53, x)
+    append_command(data, 3, 54, y)
+    append_command(data, 0, 2, 0)
+    append_command(data, 0, 0, 0)
+    command = "echo -n -e '" + "".join([f"\\x{b:02x}" for b in data]) + "' > /dev/input/event4"
+    shell(command.split())
 
 
 def release():
-    cmd_list = [
-        f"sendevent /dev/input/event4 {1} {330} {0}",
-        f"sendevent /dev/input/event4 {3} {53} {0}",
-        f"sendevent /dev/input/event4 {3} {54} {0}",
-        f"sendevent /dev/input/event4 {0} {2} {0}",
-        f"sendevent /dev/input/event4 {0} {0} {0}",
-    ]
-    cmd = " ; ".join(cmd_list).split()
-    shell(cmd)
+    data = bytearray()
+    append_command(data, 1, 330, 0)
+    append_command(data, 3, 53, 0)
+    append_command(data, 3, 54, 0)
+    append_command(data, 0, 2, 0)
+    append_command(data, 0, 0, 0)
+    command = "echo -n -e '" + "".join([f"\\x{b:02x}" for b in data]) + "' > /dev/input/event4"
+    shell(command.split())
