@@ -53,9 +53,6 @@ def fight():
             if frame.air_button:
                 utils.click(428, 296, 25, 25, 0)
                 adb.release()
-            if frame.torp_button:
-                utils.click(500, 296, 25, 25, 0)
-                adb.release()
 
         # player searching
         if frame.player is None:
@@ -64,6 +61,11 @@ def fight():
             player_x, player_y = frame.player
             last_player = frame.player
         enemy_y = -1
+
+        # pressing torpedoes
+        if frame.torp_button and player_x > 650:
+            utils.click(500, 296, 25, 25, 0)
+            adb.release()
 
         # finding best enemy
         best_x = 100000
@@ -84,19 +86,19 @@ def fight():
 
         # move to enemy y
         move_y = (enemy_y - player_y) / 300.0
-        move_y = np.clip(move_y, -1.0, 1.0)
-        move_x = 0.25 if player_x < 350 or frame.player is None else -0.1
+        move_x = 0.4 if player_x < 400 or frame.player is None else -0.2
 
         # move forward if no enemys
-        if len(frame.enemys) == 0 or best_x > 1600:
-            move_x = 0.25 if player_x < 750 or frame.player is None else -0.1
+        if len(frame.enemys) == 0 or best_x > 1500:
+            move_x = 0.4 if player_x < 850 or frame.player is None else -0.2
 
-        # move faster if we have bomb ships
-        if len(frame.bombs) > 0:
+        # move faster if we have bomb ships or torpedoes ready
+        if len(frame.bombs) > 0 or frame.torp_button:
             move_y = (enemy_y - player_y) / 100.0
-            move_x = 0.4
+            move_x = 0.6
 
         # make a move
+        move_y = np.clip(move_y, -1.0, 1.0)
         move(move_x, move_y)
 
 
