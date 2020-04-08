@@ -115,13 +115,12 @@ def get_enemy_points(quad: np.ndarray, player_point: Union[Tuple[int, int], None
 
 
 def get_ally_point(quad: np.ndarray) -> Union[Tuple[int, int], None]:
-    res = 1.0 - cv2.matchTemplate(quad[:, 40:240], Img.ally_color, cv2.TM_SQDIFF_NORMED)
+    res: np.ndarray = 1.0 - cv2.matchTemplate(quad[:, 40:240], Img.ally_color, cv2.TM_SQDIFF_NORMED)
     res[res < 0.99] = 0
-
-    py, px = ndimage.measurements.center_of_mass(res)
-    if np.isnan(py) or np.isnan(px):
+    if res.sum() == 0:
         return None
 
+    py, px = ndimage.measurements.center_of_mass(res)
     return int((px + 40) * 4) + 30, int(py * 4) + 110
 
 
