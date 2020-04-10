@@ -9,6 +9,7 @@ class Settings:
     boss: int
     swap: int
     start_swap: bool
+    start_lab: bool
     fight: bool
 
     def __init__(self):
@@ -30,6 +31,9 @@ class Settings:
             self.boss = 5
             self.start_swap = False
             self.fight = False
+
+        if self.mode != "s":
+            self.start_lab = ask("Start lab [n]", "n")[0] == "y"
 
         # save settings
         SETTINGS_FILE.write_bytes(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL))

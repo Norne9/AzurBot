@@ -1,7 +1,6 @@
 import time
 import adb
 from log import log
-import argparse
 import utils
 from data import Btn
 from game_actions import click_boss, click_enemy
@@ -13,6 +12,7 @@ from settings import Settings
 MODE_STARTSWAP = False
 MODE_EVENT = False
 MODE_FIGHT = False
+MODE_LAB = False
 MODE_SWAP = 5
 MODE_BOSS = 5
 
@@ -50,7 +50,7 @@ def begin_battle() -> bool:
 
 
 def run():
-    after_level()  # free space & collect oil first
+    after_level(MODE_LAB)  # free space & collect oil first
 
     clear_count, battle_count, go_clicks = 0, 0, 0
     nothing_start = 0.0
@@ -61,7 +61,7 @@ def run():
         if Btn.battle.on_screen(screen):
             is_nothing = False
             if not begin_battle():
-                after_level()
+                after_level(MODE_LAB)
             continue
 
         # click go
@@ -70,7 +70,7 @@ def run():
             if go_clicks > 2:
                 go_clicks = 0
                 adb.back()
-                after_level()
+                after_level(MODE_LAB)
                 continue
             utils.screenshot()
             if MODE_STARTSWAP:
@@ -111,10 +111,9 @@ def run():
                 if not click_enemy():  # try click ships
                     log("Ships not found")
                     Btn.retreat.click(utils.screenshot())
-                    battle_count, battle_clicks = 0, 0
+                    (battle_count,) = 0
 
         elif Btn.confirm.click(screen):  # after fight
-            battle_clicks = 0
             is_nothing = False
             Btn.commission.click(utils.screenshot())
             screen = utils.screenshot()
@@ -127,7 +126,7 @@ def run():
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
-                    after_level()
+                    after_level(MODE_LAB)
         elif Btn.update.on_screen(screen):  # game requested update
             is_nothing = False
             utils.restart_game()
@@ -149,8 +148,9 @@ def collect():
         utils.click_home()
         left_panel()
         utils.click_home()
-        start_lab()
-        utils.click_home()
+        if MODE_LAB:
+            start_lab()
+            utils.click_home()
         log("Waiting 5 min...")
         time.sleep(5 * 60)
 
@@ -172,7 +172,7 @@ def shot():
 if __name__ == "__main__":
     settings = Settings()
     MODE_EVENT = settings.mode == "e"
-    MODE_FIGHT = settings.fight
+    MODE_FIGHT, MODE_LAB = settings.fight, settings.start_lab
     MODE_SWAP, MODE_BOSS = settings.swap, settings.boss
     MODE_STARTSWAP = settings.start_swap
 

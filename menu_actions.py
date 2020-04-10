@@ -9,7 +9,7 @@ import img
 import numpy as np
 
 
-def after_level():
+def after_level(use_lab: bool):
     utils.click_home()  # go to main menu
     log("Removing trash")
     enhance_ships()
@@ -22,9 +22,10 @@ def after_level():
     utils.click_home()  # go to main menu
     left_panel()
 
-    log("Starting labs")
-    utils.click_home()  # go to main menu
-    start_lab()
+    if use_lab:
+        log("Starting labs")
+        utils.click_home()  # go to main menu
+        start_lab()
 
     utils.click_home()  # go to main menu
     log("Done!")
