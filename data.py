@@ -67,6 +67,11 @@ class Btn:
     use_heal = Clickable("use_heal", x=365, y=217, delay=3.0)
     cancel_heal = Clickable("cancel_heal", x=238, y=219, delay=3.0)
 
+    technology = Clickable("technology", x=58, y=6)
+    tech_rigging = Clickable("tech_rigging", x=275, y=48)
+    commence = Clickable("commence", x=216, y=285)
+    tech_confirm = Clickable("tech_confirm", x=360, y=252)
+
 
 class Img:
     arrow = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)

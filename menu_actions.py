@@ -4,6 +4,7 @@ import utils
 import random
 from data import Btn, Img
 from log import log
+from btn import Clickable
 import img
 import numpy as np
 
@@ -20,6 +21,10 @@ def after_level():
     log("Collecting oil")
     utils.click_home()  # go to main menu
     left_panel()
+
+    log("Starting labs")
+    utils.click_home()  # go to main menu
+    start_lab()
 
     utils.click_home()  # go to main menu
     log("Done!")
@@ -236,3 +241,26 @@ def send_commission():
     if Btn.commission_0.on_screen(utils.screenshot()):
         log("0 fleets")
         return
+
+
+def start_lab():
+    utils.click(3, 70, 11, 24, 2.0)  # open left panel
+    while not Btn.technology.on_screen(utils.screenshot()):  # open lab
+        utils.click(212, 277, 19, 11, 1.0)
+    for btn in [Btn.tech_rigging]:
+        if start_lab_image(btn):
+            break
+
+
+def start_lab_image(btn: Clickable):
+    for _ in range(5):
+        if btn.on_screen(utils.screenshot()):
+            utils.click(301, 92, 36, 34, 2.0)  # open project
+            if Btn.commence.click(utils.screenshot()):
+                Btn.tech_confirm.click(utils.screenshot())
+                return True
+            else:
+                return False
+        utils.click(445, 77, 38, 52, 0.5)  # open project
+        utils.click(445, 77, 38, 52, 1.5)  # open project
+    return False

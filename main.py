@@ -7,6 +7,7 @@ from data import Btn
 from game_actions import click_boss, click_enemy
 from menu_actions import after_level, left_panel
 from game_fight import fight
+from settings import Settings
 
 
 MODE_STARTSWAP = False
@@ -167,22 +168,16 @@ def shot():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Bot for farming in Azur Lane")
-    parser.add_argument("--event", action="store_true", help="Farm event")
-    parser.add_argument("-s", action="store_true", help="Make screenshots")
-    parser.add_argument("--swap", action="store", type=int, default=MODE_SWAP, help="Battle count before swap")
-    parser.add_argument("--boss", action="store", type=int, default=MODE_BOSS, help="Battle count before boss checking")
-    parser.add_argument("--fight", action="store_true", help="Manual control")
-    parser.add_argument("--startswap", action="store_true", help="Swap at beginning of battle")
-    parser.add_argument("--collect", action="store_true", help="Do not fight, just collect oil and send commissions")
-    args = parser.parse_args()
-    MODE_EVENT, MODE_FIGHT, MODE_SWAP, MODE_BOSS = args.event, args.fight, args.swap, args.boss
-    MODE_STARTSWAP = args.startswap
+    settings = Settings()
+    MODE_EVENT = settings.mode == "e"
+    MODE_FIGHT = settings.fight
+    MODE_SWAP, MODE_BOSS = settings.swap, settings.boss
+    MODE_STARTSWAP = settings.start_swap
 
     log(adb.prepare())
-    if args.collect:
+    if settings.mode == "c":
         collect()
-    elif args.s:
+    elif settings.mode == "s":
         shot()
     else:
         run()
