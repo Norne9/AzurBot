@@ -71,6 +71,8 @@ class Btn:
     tech_rigging = Clickable("tech_rigging", x=275, y=48)
     commence = Clickable("commence", x=216, y=285)
     tech_confirm = Clickable("tech_confirm", x=360, y=252)
+    # x:340 y:40 s:25x60
+    lab_girl = Clickable("lab_girl", x=340, y=40)
 
 
 class Img:
