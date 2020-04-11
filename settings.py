@@ -34,6 +34,8 @@ class Settings:
 
         if self.mode != "s":
             self.start_lab = ask("Start lab [n]", "n")[0] == "y"
+        else:
+            self.start_lab = False
 
         # save settings
         SETTINGS_FILE.write_bytes(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL))
