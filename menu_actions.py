@@ -248,7 +248,7 @@ def start_lab():
     utils.click(3, 70, 11, 24, 2.0)  # open left panel
     while not Btn.technology.on_screen(utils.screenshot()):  # open lab
         utils.click(212, 277, 19, 11, 1.0)
-    for btn in [Btn.lab_girl, Btn.tech_rigging]:
+    for btn in [Btn.lab_girl, Btn.tech_rigging, Btn.tech_basic]:
         if start_lab_image(btn):
             break
 
