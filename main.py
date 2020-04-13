@@ -111,7 +111,7 @@ def run():
                 if not click_enemy():  # try click ships
                     log("Ships not found")
                     Btn.retreat.click(utils.screenshot())
-                    (battle_count,) = 0
+                    battle_count = 0
 
         elif Btn.confirm.click(screen):  # after fight
             is_nothing = False
