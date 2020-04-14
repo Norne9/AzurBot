@@ -98,7 +98,7 @@ def fight():
             move_x = 0.6
 
         # make a move
-        move_y = np.clip(move_y, -1.0, 1.0)
+        move_y = float(np.clip(move_y, -1.0, 1.0))
         move(move_x, move_y)
 
 

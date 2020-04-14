@@ -58,3 +58,9 @@ def check_zone(screen: np.ndarray, template: np.ndarray, x: int, y: int) -> floa
     percentage = res.sum() / 255.0 / res.size
 
     return 1.0 - percentage
+
+
+def mean_square(img1: np.ndarray, img2: np.ndarray):
+    err = np.sum(((img1.astype(np.float) - img2) / 255.0) ** 2)
+    err /= img1.size
+    return err

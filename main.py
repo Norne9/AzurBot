@@ -3,7 +3,7 @@ import adb
 from log import log
 import utils
 from data import Btn
-from game_actions import click_boss, click_enemy
+from game_actions import click_boss, click_enemy, swap
 from menu_actions import after_level, left_panel, start_lab
 from game_fight import fight
 from settings import Settings
@@ -120,7 +120,7 @@ def run():
             if Btn.switch.on_screen(screen):  # fight finished
                 battle_count += 1
                 if battle_count % MODE_SWAP == 0:
-                    Btn.switch.click(screen)
+                    swap()  # change fleets
             elif clicked_boss:  # level finished
                 log("Boss killed")
                 clear_count += 1

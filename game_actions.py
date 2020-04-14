@@ -9,9 +9,9 @@ from log import log
 
 
 def double_swap():
-    utils.click(495, 358, 40, 2, 1.0)
-    utils.click(497, 334, 34, 7, 3.0)
-    utils.click(497, 334, 34, 7, 5.0)
+    swap()
+    swap()
+    time.sleep(3.0)
 
 
 swipes = [
@@ -116,7 +116,7 @@ def tap_ships(ships: List[Tuple[int, int]]) -> bool:
             # tap
             x, y = point
             log(f"Tap ship [{x}, {y}]")
-            adb.tap(x, y)
+            checked_tap(x, y)
 
             # wait
             if detect_info():  # don't try second click
@@ -154,3 +154,32 @@ def wait_for_battle(seconds: float) -> bool:
         if not Btn.switch.on_screen(utils.screenshot()):
             return True
     return False
+
+
+def swap():
+    for _ in range(8):
+        before = utils.screenshot()
+        if not Btn.switch.on_screen(before):
+            log("ERROR: Failed to switch, button not on screen")
+            return
+        before = before[58:101, 10:53]  # cut portrait
+        utils.click(497, 334, 34, 7, 0.5)
+        after = utils.screenshot()[58:101, 10:53]
+        if img.mean_square(before, after) > 0.001:
+            return
+        time.sleep(0.5)
+    log("ERROR: Failed to switch, more than 8 try's")
+
+
+def checked_tap(x, y):
+    before = utils.screenshot()[58:101, 10:53]
+    adb.tap(x, y)
+    time.sleep(0.5)
+    after = utils.screenshot()[58:101, 10:53]
+
+    # if switch disappeared it's ok
+    if not Btn.switch.on_screen(after):
+        return
+    # if ship icon changed -> change it back
+    if img.mean_square(before, after) > 0.001:
+        swap()

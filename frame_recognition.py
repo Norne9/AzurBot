@@ -63,7 +63,7 @@ def get_buttons(screen: np.ndarray) -> Tuple[bool, bool, bool, bool]:
     auto_sector = auto_sector.astype(np.float)
 
     # Mean Squared Error for auto button
-    err = np.sum((auto_sector - Img.auto_template / 255.0) ** 2)
+    err = np.sum(((auto_sector - Img.auto_template) / 255.0) ** 2)
     err /= float(auto_sector.shape[0] * auto_sector.shape[1])
     auto_button = err < 0.1
 

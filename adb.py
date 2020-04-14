@@ -5,8 +5,7 @@ import socket
 import random
 import os
 import struct
-import time
-from typing import List, Union
+from typing import List
 
 MY_IP: str = "127.0.0.1"
 MY_PORT: int = 10000
