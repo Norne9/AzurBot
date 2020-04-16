@@ -59,11 +59,11 @@ def show_frame(screen: np.ndarray, frame: Frame):
 def get_buttons(screen: np.ndarray) -> Tuple[bool, bool, bool, bool]:
     # cut auto button and make it b/w
     auto_sector = screen[49:82, 23:103]
-    auto_sector = (auto_sector[:, :, 0] < 150) | (auto_sector[:, :, 1] < 150) | (auto_sector[:, :, 2] < 150)
+    auto_sector = (auto_sector[:, :, 0] == 255) & (auto_sector[:, :, 1] > 200) & (auto_sector[:, :, 2] > 200)
     auto_sector = auto_sector.astype(np.float)
 
     # Mean Squared Error for auto button
-    err = np.sum(((auto_sector - Img.auto_template) / 255.0) ** 2)
+    err = np.sum((auto_sector - Img.auto_template) ** 2)
     err /= float(auto_sector.shape[0] * auto_sector.shape[1])
     auto_button = err < 0.1
 

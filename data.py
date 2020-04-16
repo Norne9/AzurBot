@@ -90,7 +90,7 @@ class Img:
     ally_color = np.array([[[57, 235, 156]]], dtype=np.uint8)
     enemy_color = np.full((2, 2, 3), np.array([57, 60, 247]), dtype=np.uint8)
     bomb_template = cv2.imread(f"images/game/bomb.png", cv2.IMREAD_COLOR)
-    auto_template = cv2.imread(f"images/game/auto.png", cv2.IMREAD_GRAYSCALE)
+    auto_template = cv2.imread(f"images/game/auto.png", cv2.IMREAD_GRAYSCALE) / 255.0
 
     # for learning
     book_color = np.full((4, 4, 3), np.array([99, 255, 148]), dtype=np.uint8)
