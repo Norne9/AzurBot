@@ -41,10 +41,10 @@ def fight():
             continue
 
         # launch submarine 5 seconds after start
-        if time.time() - start_time > 5.0 and not sub_used:
-            sub_used = True
-            utils.click(354, 295, 27, 25, 0)
-            adb.release()
+        # if time.time() - start_time > 5.0 and not sub_used:
+        #    sub_used = True
+        #    utils.click(354, 295, 27, 25, 0)
+        #    adb.release()
 
         # pressing buttons
         # only if we have enemys or don't have them for 5 seconds
