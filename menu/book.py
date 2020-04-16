@@ -1,8 +1,9 @@
 from data import Btn, Img
-import img
 import utils
 import adb
 import random
+import cv2
+import numpy as np
 from log import log
 from typing import List, Tuple
 
@@ -26,18 +27,18 @@ def learn_book():
 
 def find_green() -> List[Tuple[int, int]]:
     zone = adb.screenshot(False)[405:783, 290:1631]
-    points = img.find_zones(zone, Img.book_color, 0.9)
-    filtered_points = []
-    for x, y, _, _ in points:
-        exist = False
-        for x1, y1 in filtered_points:
-            if abs(x - x1) < 130:
-                exist = True
-                break
-            if abs(y - y1) < 220:
-                exist = True
-                break
-        if not exist:
-            filtered_points.append((x, y))
 
-    return [((x + 290) // 3, (y + 445) // 3) for x, y in filtered_points]
+    res = cv2.matchTemplate(zone, Img.book_color, cv2.TM_SQDIFF_NORMED)
+    loc = np.where(res < 0.01)
+    locks = zip(*loc[::-1])
+
+    points = []
+    for x, y in locks:
+        for x1, y1 in points:
+            if abs(x - x1) < 130 and abs(y - y1) < 220:
+                break
+        else:
+            points.append((int(x), int(y)))
+    points = [((x + 290) // 3, (y + 445) // 3) for x, y in points]
+
+    return points
