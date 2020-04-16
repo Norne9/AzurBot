@@ -1,113 +1,10 @@
 import adb
 import time
 import utils
-import random
 from data import Btn, Img
-from log import log
-from btn import Clickable
-import img
 import numpy as np
-
-
-def after_level(use_lab: bool):
-    utils.click_home()  # go to main menu
-    log("Removing trash")
-    enhance_ships()
-
-    utils.click_home()  # go to main menu
-    log("Retiring trash")
-    retire_ships()
-
-    log("Collecting oil")
-    utils.click_home()  # go to main menu
-    left_panel()
-
-    if use_lab:
-        log("Starting labs")
-        utils.click_home()  # go to main menu
-        start_lab()
-
-    utils.click_home()  # go to main menu
-    log("Done!")
-
-
-def left_panel():
-    utils.click(3, 70, 11, 24, 3.0)  # open left panel
-    screen = adb.screenshot()
-    Btn.menu_can.click(screen)  # tap can
-    Btn.menu_money.click(screen)  # tap money
-
-    send_commission()
-    log("Commissions done")
-
-
-def enhance_ships():
-    utils.click(87, 332, 74, 24, 3.0)  # open dock
-
-    Btn.sort.click(utils.screenshot())
-    if adb.screenshot(False)[820, 1144, 2] > 100:
-        utils.click(384, 260, 57, 14, 1.0)
-    Btn.sort_confirm.click(utils.screenshot())
-
-    utils.click(49, 53, 63, 56, 3.0)  # click first ship
-    Btn.enhance.click(utils.screenshot())
-
-    no_enhance = 0
-    while True:
-        # click enhance
-        if Btn.enhance.on_screen(utils.screenshot()):
-            utils.click(483, 302, 58, 19, 0.5)  # press fill button
-            utils.click(567, 302, 58, 19, 2.0)  # press enhance button
-
-            if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
-                no_enhance = 0
-                if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
-                    utils.click(434, 244, 164, 97, 2.0)  # tap to continue
-                else:  # something went wrong
-                    log("No break button!")
-            else:
-                no_enhance += 1
-        else:
-            no_enhance += 10
-            log("No enhance button!")
-
-        if no_enhance >= 4:  # stop if we can't enhance 4 times
-            break
-
-        adb.swipe(  # swipe to next ship
-            random.randint(900, 966), random.randint(501, 558), random.randint(210, 276), random.randint(501, 558)
-        )
-        time.sleep(1.0)
-
-
-def retire_ships():
-    def sort_rare():
-        utils.click(556, 7, 32, 12, 2.0)  # click sort
-        utils.click(318, 226, 31, 8, 1.0)  # click rare
-        utils.click(372, 318, 55, 7, 2.0)  # click confirm
-
-    utils.click(491, 336, 55, 16, 3.0)  # click build
-    utils.click(10, 221, 30, 32, 3.0)  # click retire
-    sort_rare()
-
-    # no ships
-    if Btn.retire_nothing.on_screen(utils.screenshot()):
-        log("Nothing to retire")
-        sort_rare()  # disable sorting
-        return
-
-    # select ships
-    for x in range(7):
-        utils.click(54 + x * 82, 56, 54, 50, 0.3)
-
-    utils.click(556, 328, 58, 13, 2.0)  # click confirm
-
-    if Btn.retire_confirm.click(utils.screenshot()):  # press confirm
-        if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
-            if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
-                utils.screenshot()
-
-    sort_rare()
+import img
+from log import log
 
 
 def parse_time(time_pic: np.ndarray) -> int:
@@ -242,26 +139,3 @@ def send_commission():
     if Btn.commission_0.on_screen(utils.screenshot()):
         log("0 fleets")
         return
-
-
-def start_lab():
-    utils.click(3, 70, 11, 24, 2.0)  # open left panel
-    while not Btn.technology.on_screen(utils.screenshot()):  # open lab
-        utils.click(212, 277, 19, 11, 1.0)
-    for btn in [Btn.lab_girl, Btn.tech_rigging, Btn.tech_donation, Btn.tech_basic]:
-        if start_lab_image(btn):
-            break
-
-
-def start_lab_image(btn: Clickable):
-    for _ in range(5):
-        if btn.on_screen(utils.screenshot()):
-            utils.click(301, 92, 36, 34, 2.0)  # open project
-            if Btn.commence.click(utils.screenshot()):
-                Btn.tech_confirm.click(utils.screenshot())
-                return True
-            else:
-                return False
-        utils.click(445, 77, 38, 52, 0.5)  # open project
-        utils.click(445, 77, 38, 52, 1.5)  # open project
-    return False

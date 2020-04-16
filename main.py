@@ -4,7 +4,7 @@ from log import log
 import utils
 from data import Btn
 from game_actions import click_boss, click_enemy, swap
-from menu_actions import after_level, left_panel, start_lab
+from menu.main import after_level
 from game_fight import fight
 from settings import Settings
 
@@ -144,6 +144,10 @@ def run():
 
 
 def collect():
+    from menu.main import left_panel
+    from menu.lab import start_lab
+    from menu.book import learn_book
+
     while True:
         utils.click_home()
         left_panel()
@@ -151,6 +155,8 @@ def collect():
         if MODE_LAB:
             start_lab()
             utils.click_home()
+        learn_book()
+        utils.click_home()
         log("Waiting 5 min...")
         time.sleep(5 * 60)
 

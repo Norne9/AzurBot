@@ -73,8 +73,10 @@ class Btn:
     tech_donation = Clickable("tech_donation", x=277, y=48)
     commence = Clickable("commence", x=216, y=285)
     tech_confirm = Clickable("tech_confirm", x=360, y=252)
-    # x:340 y:40 s:25x60
-    lab_girl = Clickable("lab_girl", x=340, y=40)
+    lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
+
+    book_confirm = Clickable("book_confirm", x=361, y=253)
+    book_complete = Clickable("book_complete", x=192, y=207)
 
 
 class Img:
@@ -89,6 +91,9 @@ class Img:
     enemy_color = np.full((2, 2, 3), np.array([57, 60, 247]), dtype=np.uint8)
     bomb_template = cv2.imread(f"images/game/bomb.png", cv2.IMREAD_COLOR)
     auto_template = cv2.imread(f"images/game/auto.png", cv2.IMREAD_GRAYSCALE)
+
+    # for learning
+    book_color = np.full((4, 4, 3), np.array([99, 255, 148]), dtype=np.uint8)
 
     # for triangle finding
     triangle_template = cv2.imread("images/triangle.png", cv2.IMREAD_GRAYSCALE)
