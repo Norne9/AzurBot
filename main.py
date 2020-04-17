@@ -4,7 +4,7 @@ from log import log
 import utils
 from data import Btn
 from game_actions import click_boss, click_enemy, swap
-from menu.main import after_level
+import menu
 from game_fight import fight
 from settings import Settings
 
@@ -50,7 +50,7 @@ def begin_battle() -> bool:
 
 
 def run():
-    after_level(MODE_LAB)  # free space & collect oil first
+    menu.after_level(MODE_LAB)  # free space & collect oil first
 
     clear_count, battle_count, go_clicks = 0, 0, 0
     nothing_start = 0.0
@@ -61,7 +61,7 @@ def run():
         if Btn.battle.on_screen(screen):
             is_nothing = False
             if not begin_battle():
-                after_level(MODE_LAB)
+                menu.after_level(MODE_LAB)
             continue
 
         # click go
@@ -70,7 +70,7 @@ def run():
             if go_clicks > 2:
                 go_clicks = 0
                 adb.back()
-                after_level(MODE_LAB)
+                menu.after_level(MODE_LAB)
                 continue
             utils.screenshot()
             if MODE_STARTSWAP:
@@ -126,7 +126,7 @@ def run():
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
-                    after_level(MODE_LAB)
+                    menu.after_level(MODE_LAB)
         elif Btn.update.on_screen(screen):  # game requested update
             is_nothing = False
             utils.restart_game()
@@ -144,18 +144,14 @@ def run():
 
 
 def collect():
-    from menu.main import left_panel
-    from menu.lab import start_lab
-    from menu.book import learn_book
-
     while True:
         utils.click_home()
-        left_panel()
+        menu.left_panel()
         utils.click_home()
         if MODE_LAB:
-            start_lab()
+            menu.start_lab()
             utils.click_home()
-        learn_book()
+        menu.learn_book()
         utils.click_home()
         log("Waiting 5 min...")
         time.sleep(5 * 60)

@@ -7,6 +7,8 @@ from .lab import start_lab
 from .remove import enhance_ships, retire_ships
 from .book import learn_book
 
+__all__ = ["after_level", "left_panel", "send_commission", "start_lab", "enhance_ships", "retire_ships", "learn_book"]
+
 
 def after_level(use_lab: bool):
     utils.click_home()  # go to main menu

@@ -17,9 +17,12 @@ def start_lab_image(btn: Clickable):
         if btn.on_screen(utils.screenshot()):
             utils.click(301, 92, 36, 34, 2.0)  # open project
             if Btn.commence.click(utils.screenshot()):
-                Btn.tech_confirm.click(utils.screenshot())
-                return True
+                if Btn.tech_confirm.click(utils.screenshot()):
+                    return True
+                else:
+                    utils.click(445, 77, 38, 52, 0.5)  # close project
             else:
+                utils.click(445, 77, 38, 52, 0.5)  # close project
                 return False
         utils.click(445, 77, 38, 52, 0.5)  # open project
         utils.click(445, 77, 38, 52, 1.5)  # open project
