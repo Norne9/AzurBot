@@ -58,6 +58,7 @@ def click(x: int, y: int, w: int, h: int, delay: float):
 
 
 def click_home():
+    log("Going home...")
     while True:
         adb.back()
         time.sleep(0.5)

@@ -75,8 +75,7 @@ class Btn:
     tech_confirm = Clickable("tech_confirm", x=360, y=252)
     lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
 
-    book_confirm = Clickable("book_confirm", x=361, y=253)
-    book_complete = Clickable("book_complete", x=192, y=207)
+    book_confirm = Clickable("book_confirm")
 
 
 class Img:

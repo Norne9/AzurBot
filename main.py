@@ -74,8 +74,7 @@ def run():
                 continue
             utils.screenshot()
             if MODE_STARTSWAP:
-                utils.click(495, 358, 40, 2, 1.0)
-                utils.click(497, 334, 34, 7, 5.0)
+                swap()
             continue
 
         # level selection

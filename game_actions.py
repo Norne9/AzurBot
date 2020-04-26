@@ -158,13 +158,13 @@ def wait_for_battle(seconds: float) -> bool:
 
 def swap():
     for _ in range(8):
-        before = utils.screenshot()
+        before = adb.screenshot()
         if not Btn.switch.on_screen(before):
             log("ERROR: Failed to switch, button not on screen")
             return
         before = before[58:101, 10:53]  # cut portrait
         utils.click(497, 334, 34, 7, 0.5)
-        after = utils.screenshot()[58:101, 10:53]
+        after = adb.screenshot()[58:101, 10:53]
         if img.mean_square(before, after) > 0.001:
             return
         time.sleep(0.5)
@@ -172,10 +172,10 @@ def swap():
 
 
 def checked_tap(x, y):
-    before = utils.screenshot()[58:101, 10:53]
+    before = adb.screenshot()[58:101, 10:53]
     adb.tap(x, y)
     time.sleep(0.5)
-    after = utils.screenshot()[58:101, 10:53]
+    after = adb.screenshot()[58:101, 10:53]
 
     # if switch disappeared it's ok
     if not Btn.switch.on_screen(after):
