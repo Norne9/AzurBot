@@ -52,11 +52,16 @@ def begin_battle() -> bool:
 def run():
     menu.after_level(MODE_LAB)  # free space & collect oil first
 
-    clear_count, battle_count, go_clicks = 0, 0, 0
+    clear_count, battle_count = 0, 0
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
     while True:
         screen = utils.screenshot()
+
+        # is enough oil
+        if Btn.no_oil.on_screen(screen):
+            menu.after_level(MODE_LAB)
+            continue
 
         if Btn.battle.on_screen(screen):
             is_nothing = False
@@ -64,14 +69,8 @@ def run():
                 menu.after_level(MODE_LAB)
             continue
 
-        # click go
+        # click go (for swap on start)
         if Btn.go1.click(screen):
-            go_clicks += 1
-            if go_clicks > 2:
-                go_clicks = 0
-                adb.back()
-                menu.after_level(MODE_LAB)
-                continue
             utils.screenshot()
             if MODE_STARTSWAP:
                 swap()
@@ -97,7 +96,6 @@ def run():
 
         # on map
         if Btn.switch.on_screen(screen):
-            go_clicks = 0
             is_nothing, clicked_boss = False, False
             state = "none"
 

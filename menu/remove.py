@@ -46,19 +46,23 @@ def enhance_ships():
 
 
 def retire_ships():
-    def sort_rare():
-        utils.click(556, 7, 32, 12, 2.0)  # click sort
-        utils.click(318, 226, 31, 8, 1.0)  # click rare
-        utils.click(372, 318, 55, 7, 2.0)  # click confirm
+    def sort_rare(show_rare: bool):
+        utils.click(556, 7, 32, 12, 2.5)  # click sort
+        while True:
+            is_rare = adb.screenshot(False)[700, 920, 0] > 160  # check button color
+            if show_rare == is_rare:  # check if needed state
+                break
+            utils.click(318, 226, 31, 8, 1.5)  # click rare
+        utils.click(372, 318, 55, 7, 2.5)  # click confirm
 
     utils.click(491, 336, 55, 16, 3.0)  # click build
     utils.click(10, 221, 30, 32, 3.0)  # click retire
-    sort_rare()
+    sort_rare(True)
 
     # no ships
     if Btn.retire_nothing.on_screen(utils.screenshot()):
         log("Nothing to retire")
-        sort_rare()  # disable sorting
+        sort_rare(False)  # disable sorting
         return
 
     # select ships
@@ -72,4 +76,4 @@ def retire_ships():
             if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
                 utils.screenshot()
 
-    sort_rare()
+    sort_rare(False)

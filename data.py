@@ -12,6 +12,7 @@ class Btn:
     event_name = Clickable("event_name")
     unable_info = Clickable("unable_info")
     daily = Clickable("daily", x=403, y=333)
+    no_oil = Clickable("no_oil", x=211, y=160)
 
     close = Clickable("close", x=590, y=26)
     item = Clickable("item", x=273, y=107)
@@ -73,6 +74,7 @@ class Btn:
     tech_donation = Clickable("tech_donation", x=277, y=48)
     commence = Clickable("commence", x=216, y=285)
     tech_confirm = Clickable("tech_confirm", x=360, y=252)
+    tech_terminate = Clickable("tech_terminate", x=220, y=285)
     lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
 
     book_confirm = Clickable("book_confirm")
