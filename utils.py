@@ -59,10 +59,14 @@ def click(x: int, y: int, w: int, h: int, delay: float):
 
 def click_home():
     log("Going home...")
+    start_time = time.time()
     while True:
         adb.back()
         time.sleep(0.5)
         if Btn.menu_quit_cancel.click(adb.screenshot()):
+            return
+        if time.time() - start_time > 20.0:  # it's taking to long - restart game
+            restart_game()
             return
 
 
@@ -73,10 +77,21 @@ def warn(name: str, screen):
 def restart_game():
     log("Closing game")
     adb.stop_game()
-    time.sleep(10.0)
+    time.sleep(2.0)
     log("Starting game")
     adb.start_game()
-    time.sleep(20.0)
+    time.sleep(8.0)
+
+    start_time = time.time()
+    while True:  # wait for game to start
+        screen = screenshot()
+        if Btn.daily.on_screen(screen):  # if daily on screen - done
+            break
+        if time.time() - start_time > 120.0:  # it's taking to long - try again
+            restart_game()
+            return
+        do_nothing()
+    click_home()  # go to main menu
 
 
 def show(screen):
