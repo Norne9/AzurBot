@@ -77,7 +77,7 @@ def run():
             continue
 
         # level selection
-        if Btn.daily.on_screen(screen):
+        if Btn.archives.on_screen(screen):
             if MODE_EVENT:
                 utils.click(587, 80, 31, 29, 5.0)
             else:

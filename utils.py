@@ -85,7 +85,7 @@ def restart_game():
     start_time = time.time()
     while True:  # wait for game to start
         screen = screenshot()
-        if Btn.daily.on_screen(screen):  # if daily on screen - done
+        if Btn.archives.on_screen(screen):  # if daily on screen - done
             break
         if time.time() - start_time > 120.0:  # it's taking to long - try again
             restart_game()

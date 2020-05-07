@@ -11,7 +11,7 @@ class Btn:
     level_name = Clickable("level_name")
     event_name = Clickable("event_name")
     unable_info = Clickable("unable_info")
-    daily = Clickable("daily", x=403, y=333)
+    archives = Clickable("archives", x=95, y=335)
     no_oil = Clickable("no_oil", x=211, y=160)
 
     close = Clickable("close", x=590, y=26)
