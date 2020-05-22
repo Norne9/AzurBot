@@ -56,7 +56,9 @@ def retire_ships():
         utils.click(372, 318, 55, 7, 2.5)  # click confirm
 
     utils.click(491, 336, 55, 16, 3.0)  # click build
-    utils.click(10, 221, 30, 32, 3.0)  # click retire
+    if not Btn.retire_button.click(utils.screenshot()):  # click retire
+        log("ERROR: Retire not found!")
+        return
     sort_rare(True)
 
     # no ships

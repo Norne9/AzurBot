@@ -45,6 +45,7 @@ class Btn:
     enhance = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
     retire_confirm = Clickable("retire_confirm", x=476, y=314)
     retire_nothing = Clickable("retire_nothing", x=47, y=170)
+    retire_button = Clickable("retire_button")
 
     commission_completed = Clickable("commission_completed", x=192, y=136)
     commission_s = Clickable("commission_s")
@@ -56,13 +57,13 @@ class Btn:
     commission_confirm = Clickable("commission_confirm", x=360, y=256)
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
-    commission_cancel = Clickable("commission_cancel", x=529, y=170)
+    commission_cancel = Clickable("commission_cancel", x=530, y=178)
     commission_select_cancel = Clickable("commission_select_cancel", x=216, y=256)
-    commission_select_0 = Clickable("commission_select_0", x=297, y=333)
+    commission_select_0 = Clickable("commission_select_0", x=354, y=333)
 
     menu_can = Clickable("menu_can", delay=1.0)
     menu_money = Clickable("menu_money", delay=1.0)
-    menu_quit_cancel = Clickable("menu_quit_cancel", x=216, y=257, delay=1.0)
+    menu_quit_cancel = Clickable("menu_quit_cancel", x=217, y=247, delay=1.0)
 
     zero_heals = Clickable("zero_heals", x=68, y=273, delay=2.0)
     use_heal = Clickable("use_heal", x=365, y=217, delay=3.0)

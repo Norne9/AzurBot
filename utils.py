@@ -102,3 +102,4 @@ def show(screen):
 
 def scroll_down():
     adb.swipe(1100, 900, 1100, 130)
+    time.sleep(1.0)

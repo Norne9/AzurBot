@@ -36,14 +36,14 @@ def parse_time(time_pic: np.ndarray) -> int:
 
 def send_girl():
     utils.click(121, 159, 27, 24, 3.0)  # click first plus
-    for _ in range(2):  # swipe to bottom
+    for _ in range(3):  # swipe to bottom
         utils.scroll_down()
-    for x in range(7):
-        for y in range(3):
+    for y in range(3):
+        for x in range(7):
             utils.click(60 + 84 * x, 60 + 114 * y, 40, 10, 2.0)
             Btn.commission_select_cancel.click(adb.screenshot())
             if not Btn.commission_select_0.on_screen(adb.screenshot()):
-                utils.click(468, 321, 86, 27, 2.0)
+                utils.click(535, 328, 60, 14, 2.0)
                 return
     adb.back()
     time.sleep(2.0)
@@ -126,7 +126,7 @@ def send_commission():
 
     log("Starting urgent commissions")
     utils.click(11, 114, 28, 25, 3.0)
-    while send_best_commission(False, 15000):
+    while send_best_commission(False, 29000):
         pass
     if Btn.commission_0.on_screen(utils.screenshot()):
         log("0 fleets")
@@ -134,7 +134,7 @@ def send_commission():
 
     log("Starting daily commissions")
     utils.click(12, 63, 30, 30, 3.0)
-    while send_best_commission(False, 15000):
+    while send_best_commission(False, 22000):
         pass
     if Btn.commission_0.on_screen(utils.screenshot()):
         log("0 fleets")
