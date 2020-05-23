@@ -162,13 +162,20 @@ def swap():
         if not Btn.switch.on_screen(before):
             log("ERROR: Failed to switch, button not on screen")
             return
-        before = before[58:101, 10:53]  # cut portrait
+        before = utils.screen_face()  # get portrait
         utils.click(497, 334, 34, 7, 0.5)
-        after = adb.screenshot()[58:101, 10:53]
+        after = utils.screen_face()
         if img.mean_square(before, after) > 0.001:
             return
         time.sleep(0.5)
     log("ERROR: Failed to switch, more than 8 try's")
+
+
+def swap_team(target_face, target_team):
+    current_face = utils.screen_face()
+    face_same = img.mean_square(target_face, current_face) < 0.001
+    if target_team != face_same:
+        swap()
 
 
 def checked_tap(x, y):

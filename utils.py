@@ -16,6 +16,7 @@ useless_buttons = [
     Btn.lock_confirm,
     Btn.lose_confirm,
     Btn.lose_confirm2,
+    Btn.lose_confirm3,
     Btn.lose_close,
     Btn.evade,
     Btn.got_it,
@@ -39,6 +40,10 @@ def screenshot():
         if btn.click(screen):
             return screenshot()
     return screen
+
+
+def screen_face():
+    return adb.screenshot()[70:93, 11:51]
 
 
 def do_nothing():

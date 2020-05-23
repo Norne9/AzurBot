@@ -11,8 +11,16 @@ class Settings:
     start_swap: bool
     start_lab: bool
     fight: bool
+    skip_prep: bool
 
     def __init__(self):
+        self.swap = 5
+        self.boss = 5
+        self.start_swap = False
+        self.start_lab = False
+        self.fight = False
+        self.skip_prep = False
+
         # try load settings
         if SETTINGS_FILE.exists():
             if ask("Use old settings [y/n]", "n")[0] == "y":
@@ -26,22 +34,16 @@ class Settings:
             self.boss = int(ask("Battles before boss [5]", "5"))
             self.start_swap = ask("Swap on start [n]", "n")[0] == "y"
             self.fight = ask("Use AI [n]", "n")[0] == "y"
-        else:
-            self.swap = 5
-            self.boss = 5
-            self.start_swap = False
-            self.fight = False
+            self.skip_prep = ask("Skip preparation [n]", "n")[0] == "y"
 
         if self.mode != "s":
             self.start_lab = ask("Start lab [n]", "n")[0] == "y"
-        else:
-            self.start_lab = False
 
         # save settings
         SETTINGS_FILE.write_bytes(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL))
 
     def __repr__(self):
-        return f"Settings({self.mode}, {self.boss}, {self.swap}, {self.start_swap}, {self.fight})"
+        return f"Settings({self.mode}, {self.boss}, {self.swap}, {self.start_swap}, {self.fight}, {self.skip_prep})"
 
 
 def ask(quest: str, default: str = "") -> str:

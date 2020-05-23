@@ -3,7 +3,7 @@ import adb
 from log import log
 import utils
 from data import Btn
-from game_actions import click_boss, click_enemy, swap
+from game_actions import click_boss, click_enemy, swap, swap_team
 import menu
 from game_fight import fight
 from settings import Settings
@@ -13,6 +13,7 @@ MODE_STARTSWAP = False
 MODE_EVENT = False
 MODE_FIGHT = False
 MODE_LAB = False
+MODE_SKIP = False
 MODE_SWAP = 5
 MODE_BOSS = 5
 
@@ -49,23 +50,28 @@ def begin_battle() -> bool:
 
 
 def run():
-    menu.after_level(MODE_LAB)  # free space & collect oil first
+    if not MODE_SKIP:
+        menu.after_level(MODE_LAB)  # free space & collect oil first
 
     clear_count, battle_count = 0, 0
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
+    target_team, attacked_fleet = True, False
+    ship_face = utils.screen_face()
     while True:
         screen = utils.screenshot()
 
         # is enough oil
         if Btn.no_oil.on_screen(screen):
             menu.after_level(MODE_LAB)
+            attacked_fleet = True
             continue
 
         if Btn.battle.on_screen(screen):
             is_nothing = False
             if not begin_battle():
                 menu.after_level(MODE_LAB)
+                attacked_fleet = True
             continue
 
         # click go (for swap on start)
@@ -95,6 +101,17 @@ def run():
 
         # on map
         if Btn.switch.on_screen(screen):
+            if battle_count == 0:  # first battle, remember face
+                target_team = True
+                ship_face = utils.screen_face()
+            else:  # not first, ensure face right
+                swap_team(ship_face, target_team)
+
+            if attacked_fleet:  # in fight, returned from menu
+                attacked_fleet = False
+                utils.click(583, 332, 39, 12, 2.0)  # just click attack
+                continue
+
             is_nothing, clicked_boss = False, False
             state = "none"
 
@@ -116,7 +133,7 @@ def run():
             if Btn.switch.on_screen(screen):  # fight finished
                 battle_count += 1
                 if battle_count % MODE_SWAP == 0:
-                    swap()  # change fleets
+                    target_team = not target_team  # change fleets
             elif clicked_boss:  # level finished
                 log("Boss killed")
                 clear_count += 1
@@ -172,7 +189,7 @@ if __name__ == "__main__":
     MODE_EVENT = settings.mode == "e"
     MODE_FIGHT, MODE_LAB = settings.fight, settings.start_lab
     MODE_SWAP, MODE_BOSS = settings.swap, settings.boss
-    MODE_STARTSWAP = settings.start_swap
+    MODE_STARTSWAP, MODE_SKIP = settings.start_swap, settings.skip_prep
 
     log(adb.prepare())
     if settings.mode == "c":
