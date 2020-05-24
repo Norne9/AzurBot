@@ -36,6 +36,7 @@ def begin_battle() -> bool:
         utils.warn("mood", screen)
         time.sleep(60 * 60)
         log("Continue")
+        return False
 
     Btn.battle.click(utils.screenshot())  # begin battle
     if Btn.battle.on_screen(utils.screenshot()):  # check if battle started
