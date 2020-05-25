@@ -102,6 +102,7 @@ def run():
 
         # on map
         if Btn.switch.on_screen(screen):
+            is_nothing = False
             if battle_count == 0:  # first battle, remember face
                 target_team = True
                 ship_face = utils.screen_face()
@@ -113,7 +114,7 @@ def run():
                 utils.click(583, 332, 39, 12, 2.0)  # just click attack
                 continue
 
-            is_nothing, clicked_boss = False, False
+            clicked_boss = False
             state = "none"
 
             if battle_count >= MODE_BOSS:
