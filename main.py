@@ -136,6 +136,7 @@ def run():
                 battle_count += 1
                 if battle_count % MODE_SWAP == 0:
                     target_team = not target_team  # change fleets
+                    log("Swap")
             elif clicked_boss:  # level finished
                 log("Boss killed")
                 clear_count += 1

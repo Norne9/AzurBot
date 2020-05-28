@@ -163,11 +163,11 @@ def swap():
             log("ERROR: Failed to switch, button not on screen")
             return
         before = utils.screen_face()  # get portrait
-        utils.click(497, 334, 34, 7, 0.5)
+        utils.click(497, 334, 34, 7, 1.0)
         after = utils.screen_face()
         if img.mean_square(before, after) > 0.001:
             return
-        time.sleep(0.5)
+        time.sleep(1.5)
     log("ERROR: Failed to switch, more than 8 try's")
 
 
