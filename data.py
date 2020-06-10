@@ -55,7 +55,7 @@ class Btn:
     commission_new = Clickable("commission_new")
     commission_recommend = Clickable("commission_recommend", delay=1.0)
     commission_ready = Clickable("commission_ready", delay=3.0)
-    commission_confirm = Clickable("commission_confirm", x=360, y=256)
+    commission_confirm = Clickable("commission_confirm", x=361, y=249)
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
     commission_cancel = Clickable("commission_cancel", x=530, y=178)
@@ -75,11 +75,12 @@ class Btn:
     tech_basic = Clickable("tech_basic", x=277, y=48)
     tech_donation = Clickable("tech_donation", x=277, y=48)
     commence = Clickable("commence", x=216, y=285)
-    tech_confirm = Clickable("tech_confirm", x=360, y=252)
+    tech_confirm = Clickable("tech_confirm", x=361, y=259)
     tech_terminate = Clickable("tech_terminate", x=220, y=285)
     lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
 
     book_confirm = Clickable("book_confirm")
+    universal_confirm = Clickable("universal_confirm")
 
 
 class Img:

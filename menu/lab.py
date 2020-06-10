@@ -26,7 +26,7 @@ def start_lab_image(btn: Clickable):
             if Btn.tech_terminate.on_screen(adb.screenshot()):
                 return True
             if Btn.commence.click(adb.screenshot()):
-                if Btn.tech_confirm.click(adb.screenshot()):
+                if Btn.universal_confirm.click(adb.screenshot()):
                     if Btn.tech_terminate.on_screen(adb.screenshot()):
                         return True
                 else:

@@ -87,7 +87,7 @@ def send_best_commission(oil: bool, max_time: int) -> bool:
     send_girl()
     Btn.commission_recommend.click(adb.screenshot())
     Btn.commission_ready.click(adb.screenshot())
-    Btn.commission_confirm.click(adb.screenshot())
+    Btn.universal_confirm.click(adb.screenshot())
     # check if commission started
     time.sleep(6.0)
     has_cancel = Btn.commission_cancel.on_screen(utils.screenshot())
