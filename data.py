@@ -64,7 +64,7 @@ class Btn:
 
     menu_can = Clickable("menu_can", delay=1.0)
     menu_money = Clickable("menu_money", delay=1.0)
-    menu_quit_cancel = Clickable("menu_quit_cancel", x=217, y=247, delay=1.0)
+    menu_quit_cancel = Clickable("menu_quit_cancel", x=219, y=248, delay=1.0)
 
     zero_heals = Clickable("zero_heals", x=68, y=273, delay=2.0)
     use_heal = Clickable("use_heal", x=365, y=217, delay=3.0)
