@@ -10,9 +10,9 @@ from typing import List, Tuple
 
 def learn_book():
     utils.click(3, 70, 11, 24, 2.0)  # open left panel
-    utils.click(200, 207, 41, 10, 1.0)
+    utils.click(200, 207, 41, 10, 2.0)
     log("Completing books")
-    while Btn.book_confirm.click(adb.screenshot()):
+    while Btn.universal_confirm.click(adb.screenshot()):
         points = find_green()
         if len(points) == 0:
             log("ERROR: books not found")
@@ -20,7 +20,7 @@ def learn_book():
         x, y = random.choice(points)
         utils.click(x, y, 10, 10, 2.0)
         utils.click(558, 302, 40, 14, 2.0)
-        if Btn.book_confirm.click(adb.screenshot()):
+        if Btn.universal_confirm.click(adb.screenshot()):
             log("Learning started")
     log("Books done")
 

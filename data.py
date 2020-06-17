@@ -79,8 +79,7 @@ class Btn:
     tech_terminate = Clickable("tech_terminate", x=220, y=285)
     lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
 
-    book_confirm = Clickable("book_confirm")
-    universal_confirm = Clickable("universal_confirm")
+    universal_confirm = Clickable(["universal_confirm", "universal_confirm_mini"])
 
 
 class Img:
