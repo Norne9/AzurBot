@@ -7,6 +7,7 @@ from log import log, send_img
 
 useless_buttons = [
     # Btn.item,
+    Btn.confirm,
     Btn.reconnect,
     Btn.download,
     Btn.close,

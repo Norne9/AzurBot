@@ -73,7 +73,7 @@ def retire_ships():
 
     utils.click(556, 328, 58, 13, 2.0)  # click confirm
 
-    if Btn.retire_confirm.click(utils.screenshot()):  # press confirm
+    if Btn.universal_confirm.click(utils.screenshot()):  # press confirm
         if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
             if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
                 utils.screenshot()
