@@ -12,7 +12,7 @@ def enhance_ships():
     Btn.sort.click(utils.screenshot())
     if adb.screenshot(False)[820, 1144, 2] > 100:
         utils.click(384, 260, 57, 14, 1.0)
-    Btn.sort_confirm.click(utils.screenshot())
+    Btn.universal_confirm.click(adb.screenshot())
 
     utils.click(49, 53, 63, 56, 3.0)  # click first ship
     Btn.enhance.click(utils.screenshot())
@@ -24,7 +24,7 @@ def enhance_ships():
             utils.click(483, 302, 58, 19, 0.5)  # press fill button
             utils.click(567, 302, 58, 19, 2.0)  # press enhance button
 
-            if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
+            if Btn.universal_confirm.click(adb.screenshot()):  # press confirm
                 no_enhance = 0
                 if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
                     utils.click(434, 244, 164, 97, 2.0)  # tap to continue
@@ -62,7 +62,7 @@ def retire_ships():
     sort_rare(True)
 
     # no ships
-    if Btn.retire_nothing.on_screen(utils.screenshot()):
+    if Btn.retire_nothing.on_screen(adb.screenshot()):
         log("Nothing to retire")
         sort_rare(False)  # disable sorting
         return
@@ -73,9 +73,7 @@ def retire_ships():
 
     utils.click(556, 328, 58, 13, 2.0)  # click confirm
 
-    if Btn.universal_confirm.click(utils.screenshot()):  # press confirm
-        if Btn.enhance_confirm.click(utils.screenshot()):  # press confirm
-            if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
-                utils.screenshot()
+    if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
+        utils.screenshot()
 
     sort_rare(False)

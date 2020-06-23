@@ -58,12 +58,37 @@ def run():
     nothing_start = 0.0
     is_nothing, clicked_boss = False, False
     target_team, attacked_fleet = True, False
+    fight_started = False
     ship_face = utils.screen_face()
     while True:
         screen = utils.screenshot()
 
+        # after fight
+        if fight_started:
+            if Btn.switch.on_screen(screen):  # fight finished
+                fight_started = False
+                log("Fight finished")
+
+                time.sleep(6.0)
+                battle_count += 1
+                if battle_count % MODE_SWAP == 0:
+                    target_team = not target_team  # change fleets
+                    log("Swap")
+                continue
+
+            elif clicked_boss and Btn.level_name.on_screen(screen):  # level finished
+                fight_started = False
+                log("Boss killed")
+
+                clear_count += 1
+                battle_count = 0
+                if clear_count % 2 == 0:
+                    menu.after_level(MODE_LAB)
+                continue
+
         # is enough oil
         if Btn.no_oil.on_screen(screen):
+            is_nothing = False
             menu.after_level(MODE_LAB)
             attacked_fleet = True
             continue
@@ -73,10 +98,13 @@ def run():
             if not begin_battle():
                 menu.after_level(MODE_LAB)
                 attacked_fleet = True
+            else:
+                fight_started = True
             continue
 
         # click go (for swap on start)
         if Btn.go1.click(screen):
+            is_nothing = False
             utils.screenshot()
             if MODE_STARTSWAP:
                 swap()
@@ -84,6 +112,7 @@ def run():
 
         # level selection
         if Btn.archives.on_screen(screen):
+            is_nothing = False
             if MODE_EVENT:
                 utils.click(587, 80, 31, 29, 5.0)
             else:
@@ -98,6 +127,7 @@ def run():
                     utils.click(25, 178, 6, 17, 3.0)
             continue
         elif MODE_EVENT and Btn.event_name.click(screen):
+            is_nothing = False
             continue
 
         # on map
@@ -127,25 +157,6 @@ def run():
                     log("Ships not found")
                     Btn.retreat.click(utils.screenshot())
                     battle_count = 0
-
-        elif Btn.confirm.click(screen):  # after fight
-            is_nothing = False
-            Btn.commission.click(utils.screenshot())
-            screen = utils.screenshot()
-            if Btn.switch.on_screen(screen):  # fight finished
-                battle_count += 1
-                if battle_count % MODE_SWAP == 0:
-                    target_team = not target_team  # change fleets
-                    log("Swap")
-            elif clicked_boss:  # level finished
-                log("Boss killed")
-                clear_count += 1
-                battle_count = 0
-                if clear_count % 2 == 0:
-                    menu.after_level(MODE_LAB)
-        elif Btn.update.on_screen(screen):  # game requested update
-            is_nothing = False
-            utils.restart_game()
         else:  # nothing to do
             if not is_nothing:
                 nothing_start = time.time()
@@ -156,7 +167,8 @@ def run():
                 log("Nothing to do for 5 minutes")
                 is_nothing = False
                 utils.restart_game()
-            utils.do_nothing()
+            else:
+                utils.do_nothing()
 
 
 def collect():

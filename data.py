@@ -26,25 +26,13 @@ class Btn:
     auto = Clickable("auto", x=376, y=56, delay=1.0)
     auto_sub = Clickable("auto_sub", x=377, y=84, delay=1.0)
     battle = Clickable("battle", x=529, y=306, delay=5.0)
-    confirm = Clickable("confirm", x=511, y=321, delay=6.0)
-    lock_confirm = Clickable("lock_confirm", x=360, y=252)
-    lose_confirm = Clickable("lose_confirm", x=286, y=258)
-    lose_confirm2 = Clickable("lose_confirm2", x=285, y=253)
-    lose_confirm3 = Clickable("lose_confirm3", x=286, y=248)
     lose_close = Clickable("lose_close", x=298, y=305)
-    commission = Clickable("commission", x=284, y=252)
-    reconnect = Clickable("reconnect", x=360, y=252)
-    download = Clickable("download", x=364, y=242)
-    update = Clickable("update", x=284, y=251)
     retreat = Clickable("retreat", x=380, y=330)
 
     sort = Clickable("sort", x=555, y=7)
-    sort_confirm = Clickable("sort_confirm", x=369, y=314)
     enhanceable = Clickable("enhanceable", x=380, y=270)
-    enhance_confirm = Clickable("enhance_confirm", x=447, y=262)
     enhance_break = Clickable("enhance_break", x=367, y=277)
     enhance = Clickable(["enhance_button1", "enhance_button2"], delay=1.0)
-    retire_confirm = Clickable("retire_confirm", x=476, y=314)
     retire_nothing = Clickable("retire_nothing", x=47, y=170)
     retire_button = Clickable("retire_button")
 
@@ -55,7 +43,6 @@ class Btn:
     commission_new = Clickable("commission_new")
     commission_recommend = Clickable("commission_recommend", delay=1.0)
     commission_ready = Clickable("commission_ready", delay=3.0)
-    commission_confirm = Clickable("commission_confirm", x=361, y=249)
     commission_cost = Clickable("commission_cost", x=558, y=147)
     commission_oil = Clickable("commission_oil")
     commission_cancel = Clickable("commission_cancel", x=530, y=178)
@@ -75,11 +62,19 @@ class Btn:
     tech_basic = Clickable("tech_basic", x=277, y=48)
     tech_donation = Clickable("tech_donation", x=277, y=48)
     commence = Clickable("commence", x=216, y=285)
-    tech_confirm = Clickable("tech_confirm", x=361, y=259)
     tech_terminate = Clickable("tech_terminate", x=220, y=285)
     lab_girl = Clickable("lab_girl", x=340, y=40)  # x:340 y:40 s:25x60
 
-    universal_confirm = Clickable(["universal_confirm", "universal_confirm_mini"])
+    universal_confirm = Clickable(
+        [
+            "universal_confirm",
+            "universal_confirm_mini",
+            "universal_confirm2",
+            "universal_confirm3",
+            "universal_confirm4",
+            "universal_confirm5",
+        ]
+    )
 
 
 class Img:

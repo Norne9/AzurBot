@@ -7,24 +7,19 @@ from log import log, send_img
 
 useless_buttons = [
     # Btn.item,
-    Btn.confirm,
-    Btn.reconnect,
-    Btn.download,
     Btn.close,
     Btn.menu_battle,
     # Btn.go1,
     Btn.go2,
-    Btn.lock_confirm,
-    Btn.lose_confirm,
-    Btn.lose_confirm2,
-    Btn.lose_confirm3,
     Btn.lose_close,
     Btn.evade,
     Btn.got_it,
+    Btn.universal_confirm,
 ]
 
 
 def screenshot():
+    time.sleep(0.5)
     screen = adb.screenshot()
 
     if Btn.item.click(screen):  # send what we get to discord
