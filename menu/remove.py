@@ -71,9 +71,11 @@ def retire_ships():
     for x in range(7):
         utils.click(54 + x * 82, 56, 54, 50, 0.3)
 
-    utils.click(556, 328, 58, 13, 2.0)  # click confirm
-
-    if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
-        utils.screenshot()
+    if Btn.universal_confirm.click(adb.screenshot()):  # click confirm
+        if Btn.universal_confirm.click(adb.screenshot()):  # confirm retire
+            if Btn.item.click(adb.screenshot()):  # accept items
+                if Btn.universal_confirm.click(adb.screenshot()):  # confirm disassemble
+                    if Btn.enhance_break.click(utils.screenshot()):  # press disassemble
+                        Btn.item.click(adb.screenshot())  # accept items
 
     sort_rare(False)
