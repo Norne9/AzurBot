@@ -126,12 +126,23 @@ def tap_ships(ships: List[Tuple[int, int]]) -> bool:
 
 
 def click_question():
-    for _ in range(3):
-        if not Btn.question.click(utils.screenshot()):
-            break
+    screen = utils.screenshot()
+    zones = img.find_zones(screen, Img.question0, 0.8)
+    zones.extend(img.find_zones(screen, Img.question1, 0.8))
+    for x, y, w, h in zones:
+        x, y = x + w / 2, y + h / 2 + 30
+        point = enemy_finder.get_safe_point(int(x), int(y))
+        if point is None:
+            continue
+        x, y = point
+        log(f"Click question [{x}, {y}]")
+        utils.click(x, y, 10, 10, 1.0)
         if detect_info():
             continue
+
         time.sleep(7.0)
+        click_question()
+        break
 
 
 def detect_info() -> bool:

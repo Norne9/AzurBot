@@ -4,7 +4,6 @@ import numpy as np
 
 
 class Btn:
-    question = Clickable([f"question{i}" for i in range(2)], offset_y=30, delay=0)
     switch = Clickable("switch", delay=5.0)
     mood = Clickable("mood")
 
@@ -83,6 +82,8 @@ class Img:
     boss_mini = cv2.imread(f"images/boss_mini.png", cv2.IMREAD_GRAYSCALE)
     digits = [cv2.imread(f"images/digits/{i}.png", cv2.IMREAD_GRAYSCALE) for i in range(10)]
     commission = cv2.imread(f"images/commission_new.png", cv2.IMREAD_GRAYSCALE)
+    question0 = cv2.imread("images/question0.png", cv2.IMREAD_GRAYSCALE)
+    question1 = cv2.imread("images/question1.png", cv2.IMREAD_GRAYSCALE)
 
     # for frame recognition
     ally_color = np.array([[[57, 235, 156]]], dtype=np.uint8)

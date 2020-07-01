@@ -67,7 +67,7 @@ def run():
         if fight_started:
             if Btn.switch.on_screen(screen):  # fight finished
                 fight_started = False
-                log("Fight finished")
+                log(f"Fight finished ({battle_count+1}/{MODE_BOSS})")
 
                 time.sleep(6.0)
                 battle_count += 1
@@ -76,14 +76,20 @@ def run():
                     log("Swap")
                 continue
 
-            elif clicked_boss and Btn.level_name.on_screen(screen):  # level finished
+            elif clicked_boss and (
+                Btn.level_name.on_screen(screen) or Btn.event_name.on_screen(screen)
+            ):  # level finished
                 fight_started = False
-                log("Boss killed")
+                log(f"Boss killed ({clear_count+1}/2)")
 
                 clear_count += 1
                 battle_count = 0
                 if clear_count % 2 == 0:
                     menu.after_level(MODE_LAB)
+                continue
+
+            else:  # wait
+                utils.do_nothing()
                 continue
 
         # is enough oil
