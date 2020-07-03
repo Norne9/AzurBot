@@ -125,7 +125,7 @@ def tap_ships(ships: List[Tuple[int, int]]) -> bool:
                 return True
 
 
-def click_question():
+def click_question(clicks_before: int = 0):
     screen = utils.screenshot()
     zones = img.find_zones(screen, Img.question0, 0.8)
     zones.extend(img.find_zones(screen, Img.question1, 0.8))
@@ -141,7 +141,8 @@ def click_question():
             continue
 
         time.sleep(7.0)
-        click_question()
+        if clicks_before < 4:
+            click_question(clicks_before + 1)
         break
 
 
