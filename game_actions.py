@@ -131,12 +131,12 @@ def click_question(clicks_before: int = 0):
     zones.extend(img.find_zones(screen, Img.question1, 0.8))
     for x, y, w, h in zones:
         x, y = x + w / 2, y + h / 2 + 30
-        point = enemy_finder.get_safe_point(int(x), int(y))
+        point = enemy_finder.get_safe_point(int(x) * 3, int(y) * 3)
         if point is None:
             continue
         x, y = point
         log(f"Click question [{x}, {y}]")
-        utils.click(x, y, 10, 10, 1.0)
+        adb.tap(x, y)
         if detect_info():
             continue
 
