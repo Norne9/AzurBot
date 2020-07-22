@@ -39,6 +39,14 @@ def begin_battle() -> bool:
         return False
 
     Btn.battle.click(utils.screenshot())  # begin battle
+
+    if Btn.enhance_start.click(utils.screenshot()):
+        menu.enhance_ships()
+        for i in range(2):
+            adb.back()
+            time.sleep(1.5)
+        return begin_battle()
+
     if Btn.battle.on_screen(utils.screenshot()):  # check if battle started
         return False
 

@@ -13,6 +13,7 @@ __all__ = ["after_level", "left_panel", "send_commission", "start_lab", "enhance
 def after_level(use_lab: bool):
     utils.click_home()  # go to main menu
     log("Removing trash")
+    utils.click(87, 332, 74, 24, 3.0)  # open dock
     enhance_ships()
 
     utils.click_home()  # go to main menu

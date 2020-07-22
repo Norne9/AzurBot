@@ -7,8 +7,6 @@ import time
 
 
 def enhance_ships():
-    utils.click(87, 332, 74, 24, 3.0)  # open dock
-
     Btn.sort.click(utils.screenshot())
     if adb.screenshot(False)[820, 1144, 2] > 100:
         utils.click(384, 260, 57, 14, 1.0)
