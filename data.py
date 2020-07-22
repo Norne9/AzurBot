@@ -97,4 +97,6 @@ class Img:
     # for triangle finding
     triangle_template = cv2.imread("images/triangle.png", cv2.IMREAD_GRAYSCALE)
     triangle_big_template = cv2.imread("images/triangle_big.png", cv2.IMREAD_GRAYSCALE)
+    triangle_small_template = cv2.imread("images/triangle_small.png", cv2.IMREAD_GRAYSCALE)
+    triangle_small_small_template = cv2.imread("images/triangle_small_small.png", cv2.IMREAD_GRAYSCALE)
     deadzone_image = cv2.imread("images/deadzone.png", cv2.IMREAD_GRAYSCALE)

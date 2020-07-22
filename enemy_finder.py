@@ -25,36 +25,31 @@ def find_triangles(screen: np.ndarray, yellow: bool) -> List[Tuple[int, int]]:
 
     res1 = cv2.matchTemplate(screen, Img.triangle_template, cv2.TM_SQDIFF_NORMED)
     res2 = cv2.matchTemplate(screen, Img.triangle_big_template, cv2.TM_SQDIFF_NORMED)
+    res3 = cv2.matchTemplate(screen, Img.triangle_small_template, cv2.TM_SQDIFF_NORMED)
+    res4 = cv2.matchTemplate(screen, Img.triangle_small_small_template, cv2.TM_SQDIFF_NORMED)
 
     result = []
 
-    # res2
-    loc = np.where(res2 < 0.15)
-    locks = zip(*loc[::-1])
-    for x, y in locks:  # Switch columns and rows
-        x, y = x + 100, y + 110
-        # check if its already exists
-        for rx, ry in result:
-            diff = abs(x - rx) + abs(y - ry)
-            if diff < 100:
-                break
-        else:  # add
-            result.append((x, y))
-
-    # res1
-    loc = np.where(res1 < 0.15)
-    locks = zip(*loc[::-1])
-    for x, y in locks:  # Switch columns and rows
-        x, y = x + 100, y + 110
-        # check if its already exists
-        for rx, ry in result:
-            diff = abs(x - rx) + abs(y - ry)
-            if diff < 100:
-                break
-        else:  # add
-            result.append((x, y))
+    append_result(result, res1)
+    append_result(result, res2)
+    append_result(result, res3)
+    append_result(result, res4)
 
     return result
+
+
+def append_result(result: List[Tuple[int, int]], data: np.ndarray):
+    loc = np.where(data < 0.15)
+    locks = zip(*loc[::-1])
+    for x, y in locks:  # Switch columns and rows
+        x, y = x + 100, y + 110
+        # check if its already exists
+        for rx, ry in result:
+            diff = abs(x - rx) + abs(y - ry)
+            if diff < 100:
+                break
+        else:  # add
+            result.append((x, y))
 
 
 def get_safe_point(x: int, y: int) -> Union[None, Tuple[int, int]]:
