@@ -79,6 +79,7 @@ class Btn:
 class Img:
     arrow = cv2.imread(f"images/arrow.png", cv2.IMREAD_GRAYSCALE)
     boss = cv2.imread(f"images/boss.png", cv2.IMREAD_GRAYSCALE)
+    boss2 = cv2.imread(f"images/boss2.png", cv2.IMREAD_GRAYSCALE)
     boss_mini = cv2.imread(f"images/boss_mini.png", cv2.IMREAD_GRAYSCALE)
     digits = [cv2.imread(f"images/digits/{i}.png", cv2.IMREAD_GRAYSCALE) for i in range(10)]
     commission = cv2.imread(f"images/commission_new.png", cv2.IMREAD_GRAYSCALE)

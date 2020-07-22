@@ -54,7 +54,7 @@ def append_result(result: List[Tuple[int, int]], data: np.ndarray):
 
 def get_safe_point(x: int, y: int) -> Union[None, Tuple[int, int]]:
     for _ in range(64):
-        px, py = x + random.randint(-32, 32), y + random.randint(-32, 32)
+        px, py = x + random.randint(-10, 10), y + random.randint(-10, 10)
         if px < 0 or py < 0 or px >= 1920 or py >= 1080:
             continue
         if Img.deadzone_image[py, px] > 100:  # white deadzone

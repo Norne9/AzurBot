@@ -43,15 +43,13 @@ def click_boss() -> str:
         click_question()
         screen = utils.screenshot()
 
-        boss_point = img.find_best(screen, Img.boss, 0.7)
-        if boss_point is None:
-            boss_point = img.find_best(screen, Img.boss_mini, 0.7)
-            if boss_point is None:
-                continue
-            else:
-                boss_point = boss_point[0] - 4, boss_point[1] - 6
+        for boss_pic in [Img.boss, Img.boss2, Img.boss_mini]:
+            boss_point = img.find_best(screen, boss_pic, 0.7)
+            if boss_point is not None:
+                boss_point = boss_point[0] + boss_pic.shape[1] // 2, boss_point[1] + boss_pic.shape[0] // 2
+                break
         else:
-            boss_point = boss_point[0] + 20, boss_point[1] + 7
+            continue
 
         x, y = boss_point
         point = None

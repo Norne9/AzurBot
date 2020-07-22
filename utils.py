@@ -4,6 +4,7 @@ import time
 import cv2
 from data import Btn
 from log import log, send_img
+import numpy as np
 
 useless_buttons = [
     # Btn.item,
@@ -18,7 +19,7 @@ useless_buttons = [
 ]
 
 
-def screenshot():
+def screenshot() -> np.ndarray:
     time.sleep(0.5)
     screen = adb.screenshot()
 
