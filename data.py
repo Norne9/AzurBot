@@ -73,7 +73,8 @@ class Btn:
             "universal_confirm3",
             "universal_confirm4",
             "universal_confirm5",
-        ]
+        ],
+        delay=4.0,
     )
 
 
