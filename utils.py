@@ -33,6 +33,10 @@ def screenshot() -> np.ndarray:
         send_img("test.png")
         return screenshot()
 
+    if Btn.no_oil.on_screen(screen):  # no oil, stop bot
+        log("No oil!")
+        exit(0)
+
     for btn in useless_buttons:
         if btn.click(screen):
             return screenshot()

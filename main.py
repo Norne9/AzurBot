@@ -100,13 +100,6 @@ def run():
                 utils.do_nothing()
                 continue
 
-        # is enough oil
-        if Btn.no_oil.on_screen(screen):
-            is_nothing = False
-            menu.after_level(MODE_LAB)
-            attacked_fleet = True
-            continue
-
         if Btn.battle.on_screen(screen):
             is_nothing = False
             if not begin_battle():
